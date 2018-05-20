@@ -7,17 +7,17 @@ class klGaussianMixture
 {
 public:
 
-	klGaussianMixture(__int64 numPointsPerCenter, __int64 numCenters,__int64 dimension ,double scale) :
+	klGaussianMixture(__int64_t numPointsPerCenter, __int64_t numCenters,__int64_t dimension ,double scale) :
 	  _data(numPointsPerCenter*numCenters,dimension),  _numPointsPerCenter(numPointsPerCenter), 
 		  _numPoints(numPointsPerCenter*numCenters), _numCenters(numCenters), _dimension(dimension) , _scale(scale),
 		  _uniformRG(0,1), _clusterMembership(numPointsPerCenter*numCenters), _clusterCenters(numCenters,dimension)
 	{
 		_uniformRG.reset( fastSeed());		
 
-		for(__int64 c=0;c<numCenters;c++)
+		for(__int64_t c=0;c<numCenters;c++)
 		{
 			klVector<double> center(_dimension);
-			for(__int64 i =0;i<_dimension;i++)
+			for(__int64_t i =0;i<_dimension;i++)
 				center[i]=_uniformRG();
 			
 			_clusterCenters[c]=center;
@@ -43,7 +43,7 @@ public:
 
 private:
 		
-	void addCluster(klVector<double> center,__int64 c)
+	void addCluster(klVector<double> center,__int64_t c)
 	{
 		klMatrix<double> covarianceMatrix =klGenerateRandomSymmetricPositiveDefiniteMatrix<double>(_dimension,fastSeed() );
 	
@@ -55,7 +55,7 @@ private:
 
 		klNormalMultiVariate<double> X(center,covarianceMatrix,true);
 		
-		for(__int64 i =0;i<_numPointsPerCenter;i++)
+		for(__int64_t i =0;i<_numPointsPerCenter;i++)
 		{
 			_clusterMembership[c*_numPointsPerCenter +i] =(int)c;
 			_data[c*_numPointsPerCenter +i ]=X();
@@ -64,10 +64,10 @@ private:
 
 	klMatrix<double> _data;
 	klMatrix<double> _clusterCenters;
-	__int64 _numPointsPerCenter;
-	__int64 _numPoints;
-	__int64 _numCenters;
-	__int64 _dimension;
+	__int64_t _numPointsPerCenter;
+	__int64_t _numPoints;
+	__int64_t _numCenters;
+	__int64_t _dimension;
 	double _scale;
 	klUniformRV<double> _uniformRG;
 	klVector<int> _clusterMembership;
@@ -78,7 +78,7 @@ class klUniformHyperCube
 {
 public:
 
-	klUniformHyperCube(__int64 numPoints,__int64 dimension ) :
+	klUniformHyperCube(__int64_t numPoints,__int64_t dimension ) :
 	  _numPoints(numPoints), _dimension(dimension), _data(numPoints,dimension)
 
 	  {
@@ -115,8 +115,8 @@ public:
 private:
 
 	klMatrix<double> _data;
-	__int64 _numPoints;
-	__int64 _dimension;
+	__int64_t _numPoints;
+	__int64_t _dimension;
 	klUniformRV<double>* _uniformRGVect;
 
 };
@@ -190,7 +190,7 @@ inline void generateSicknessManifoldDataSet( klMatrix<double>& dataSet, klVector
 	sigma4[0][0]= 2 ; sigma4[1][0]= 0; sigma4[0][1]=  0; sigma4[1][1]=  1 ;
 	klNormalMultiVariate<double> RV4(mu4,sigma4,true);
 	
-	for(__int64 i=0;i<dataSet.getRows();i++)
+	for(__int64_t i=0;i<dataSet.getRows();i++)
 	{
 		klVector<double> sample(2);
 		sample =0;
@@ -229,10 +229,10 @@ inline void generateSicknessManifoldDataSet( klMatrix<double>& dataSet, klVector
 	//Crude 
 	klMatrix<double> dataSetT(dataSet.getRows(),3);
 	klVector<int> classLabelsT(dataSet.getRows());
-	__int64 currentRow=0;
+	__int64_t currentRow=0;
 	for(int j=0;j<4;j++)
 	{
-		for(__int64 i=0;i<dataSet.getRows();i++)
+		for(__int64_t i=0;i<dataSet.getRows();i++)
 		{
 			if(classLabels[i]==j)
 			{

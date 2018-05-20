@@ -1,4 +1,5 @@
 
+
 #include "kl_vsl.h"
 
 klMemMgr* klGlobalMemoryManager::_globalMemoryManager=NULL;
@@ -15,7 +16,7 @@ void klVSLAdd(klVector< complex<double > >& v,klVector< complex<double> >& b, kl
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLAdd");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzAdd( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 }
@@ -28,7 +29,7 @@ void klVSLSub(klVector< complex<double > >& v,klVector< complex<double> >& b, kl
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLSub");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vzSub( n,  v.getMemory(),b.getMemory(),ans.getMemory());
@@ -42,7 +43,7 @@ void klVSLMul(klVector< complex<double > >& v,klVector< complex<double> >& b, kl
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLMul");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vzMul( n,  v.getMemory(),b.getMemory(),ans.getMemory());
@@ -56,7 +57,7 @@ void klVSLMulByConj(klVector< complex<double > >& v,klVector< complex<double> >&
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLMulByConj");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzMulByConj( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 }
@@ -66,7 +67,7 @@ void klVSLConj(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzConj( n,  v.getMemory(),ans.getMemory());
 }
@@ -76,7 +77,7 @@ void klVSLAbs(klVector< complex<double > >& v ,klVector<double>& ans)
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	
 	vzAbs( n,  v.getMemory(),ans.getMemory());
 }
@@ -86,7 +87,7 @@ void klVSLArg(klVector< complex<double > >& v, klVector<double>& ans  )
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzArg( n,  v.getMemory(),ans.getMemory());
 }
@@ -109,7 +110,7 @@ void klVSLDiv(klVector< complex<double > >& v,klVector< complex<double> >& b, kl
 		{ANSI_INFO; throw klError(err + "Divide By Zeroin klSVLDiv");}
 	}
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzDiv( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 }
@@ -119,7 +120,7 @@ void klVSLSqrt(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzSqrt( n,  v.getMemory(),ans.getMemory());
 }
@@ -133,7 +134,7 @@ void klVSLPow(klVector< complex<double > >& v,klVector< complex<double> >& b, kl
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLDiv");
 	}
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzPow( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 }
@@ -143,7 +144,7 @@ void klVSLPowX(klVector< complex<double > >& v,complex< double> x, klVector< com
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzPowx( n,  v.getMemory(),x,ans.getMemory());
 }
@@ -153,7 +154,7 @@ void klVSLExp(klVector< complex<double > >& v, klVector< complex<double > >& ans
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzExp( n,  v.getMemory(),ans.getMemory());
 }
@@ -163,7 +164,7 @@ void klVSLLn(klVector< complex<double > >& v, klVector< complex<double > >& ans)
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzLn( n,  v.getMemory(),ans.getMemory());
 }
@@ -173,7 +174,7 @@ void klVSLLog10(klVector< complex<double > >& v, klVector< complex<double > >& a
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzLog10( n,  v.getMemory(),ans.getMemory());
 
@@ -184,7 +185,7 @@ void klVSLCos(klVector< complex<double > >& v, klVector< complex<double > >& ans
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzCos( n,  v.getMemory(),ans.getMemory());
 
@@ -195,7 +196,7 @@ void klVSLSin(klVector< complex<double > >& v, klVector< complex<double > >& ans
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vzSin( n,  v.getMemory(),ans.getMemory());
@@ -206,7 +207,7 @@ void klVSLTan(klVector< complex<double > >& v, klVector< complex<double > >& ans
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzTan( n,  v.getMemory(),ans.getMemory());
 }
@@ -216,7 +217,7 @@ void klVSLAcos(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzAcos( n,  v.getMemory(),ans.getMemory());
 }
@@ -226,7 +227,7 @@ void klVSLAsin(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzAsin( n,  v.getMemory(),ans.getMemory());
 }
@@ -236,7 +237,7 @@ void klVSLAtan(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzAtan( n,  v.getMemory(),ans.getMemory());
 }
@@ -246,7 +247,7 @@ void klVSLCosh(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzCosh( n,  v.getMemory(),ans.getMemory());
 }
@@ -256,7 +257,7 @@ void klVSLSinh(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzSinh( n,  v.getMemory(),ans.getMemory());
 }
@@ -266,7 +267,7 @@ void klVSLTanh(klVector< complex<double > >& v, klVector< complex<double > >& an
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vzTanh( n,  v.getMemory(),ans.getMemory());
 }
@@ -275,7 +276,7 @@ void klVSLTanh(klVector< complex<double > >& v, klVector< complex<double > >& an
 void klVSLAcosh(klVector< complex<double > >& v, klVector< complex<double > >& ans)
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	vzAcosh( n,  v.getMemory(),ans.getMemory());
 }
 
@@ -284,7 +285,7 @@ void klVSLAsinh(klVector< complex<double > >& v, klVector< complex<double > >& a
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	vzAsinh( n,  v.getMemory(),ans.getMemory());
 
 }
@@ -294,7 +295,7 @@ void klVSLAtanh(klVector< complex<double > >& v, klVector< complex<double > >& a
 {
 	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	vzAtanh( n,  v.getMemory(),ans.getMemory());
 	
 }
@@ -309,7 +310,7 @@ void klVSLAdd(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLAdd");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdAdd( n,  v.getMemory(),b.getMemory(),ans.getMemory());
@@ -324,7 +325,7 @@ void klVSLSub(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLSub");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdSub( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 
@@ -338,7 +339,7 @@ void klVSLMul(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLMul");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdMul( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 
@@ -352,7 +353,7 @@ void klVSLDiv(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLSub");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdDiv( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 
@@ -366,7 +367,7 @@ void klVSLPow(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLPow");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdPow( n,  v.getMemory(),b.getMemory(),ans.getMemory());
@@ -375,7 +376,7 @@ void klVSLPow(klVector<double>& v,klVector<double>& b, klVector<double>& ans)
 //vdSqr		Squaring of vector elements
 void klVSLSqr(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdSqr( n,  v.getMemory(),ans.getMemory());
 
@@ -384,7 +385,7 @@ void klVSLSqr(klVector<double>& v,klVector<double>& ans)
 //vdAbs		Computation of the absolute value of vector elements
 void klVSLAbs(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdAbs( n,  v.getMemory(),ans.getMemory());
 
@@ -393,7 +394,7 @@ void klVSLAbs(klVector<double>& v,klVector<double>& ans)
 //vdInv		Inversion of vector elements
 void klVSLInv(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdInv( n,  v.getMemory(),ans.getMemory());
@@ -403,7 +404,7 @@ void klVSLInv(klVector<double>& v,klVector<double>& ans)
 //vdSqrt Computation of the square root of vector elements
 void klVSLSqrt(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdSqrt( n,  v.getMemory(),ans.getMemory());
@@ -413,7 +414,7 @@ void klVSLSqrt(klVector<double>& v,klVector<double>& ans)
 //vdPowx		Raising each vector element to the constant power
 void klVSLPowx(klVector<double>& v,double x,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdPowx( n,  v.getMemory(),x,ans.getMemory());
@@ -428,7 +429,7 @@ void klVSLHypot(klVector<double>& v,klVector<double  >& b,klVector<double>& ans)
 	{
 		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLAdd");
 	}
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdHypot( n,  v.getMemory(),b.getMemory(),ans.getMemory());
 
@@ -437,7 +438,7 @@ void klVSLHypot(klVector<double>& v,klVector<double  >& b,klVector<double>& ans)
 //vdExp	Computation of the exponential of vector elements
 void klVSLExp(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdExp( n,  v.getMemory(),ans.getMemory());
@@ -447,7 +448,7 @@ void klVSLExp(klVector<double>& v,klVector<double>& ans)
 //vdExpm1		Computation of the exponential of vector elements decreased by 1
 void klVSLExpm1(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdExpm1( n,  v.getMemory(),ans.getMemory());
 
@@ -456,7 +457,7 @@ void klVSLExpm1(klVector<double>& v,klVector<double>& ans)
 //vdLn	Computation of the natural logarithm of vector elements
 void klVSLLn(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdLn( n,  v.getMemory(),ans.getMemory());
@@ -466,7 +467,7 @@ void klVSLLn(klVector<double>& v,klVector<double>& ans)
 //vdLog10		Computation of the denary logarithm of vector elements
 void klVSLLog10(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdLog10( n,  v.getMemory(),ans.getMemory());
@@ -476,7 +477,7 @@ void klVSLLog10(klVector<double>& v,klVector<double>& ans)
 //vdCos		Computation of the cosine of vector elements
 void klVSLCos(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdCos( n,  v.getMemory(),ans.getMemory());
@@ -486,7 +487,7 @@ void klVSLCos(klVector<double>& v,klVector<double>& ans)
 //vdSin		Computation of the sine of vector elements
 void klVSLSin(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdSin( n,  v.getMemory(),ans.getMemory());
@@ -496,7 +497,7 @@ void klVSLSin(klVector<double>& v,klVector<double>& ans)
 //vdTan		Computation of the tangent of vector elements
 void klVSLTan(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdTan( n,  v.getMemory(),ans.getMemory());
@@ -506,7 +507,7 @@ void klVSLTan(klVector<double>& v,klVector<double>& ans)
 //vdAcos		Computation of the inverse cosine of vector elements
 void klVSLAcos(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdAcos( n,  v.getMemory(),ans.getMemory());
 
@@ -515,7 +516,7 @@ void klVSLAcos(klVector<double>& v,klVector<double>& ans)
 //vdAsin		Computation of the inverse sine of vector elements
 void klVSLAsin(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdAsin( n,  v.getMemory(),ans.getMemory());
@@ -525,7 +526,7 @@ void klVSLAsin(klVector<double>& v,klVector<double>& ans)
 //vdAtan		Computation of the inverse tangent of vector elements
 void klVSLAtan(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdAtan( n,  v.getMemory(),ans.getMemory());
 
@@ -534,7 +535,7 @@ void klVSLAtan(klVector<double>& v,klVector<double>& ans)
 //vdCosh		Computation of the hyperbolic cosine of vector elements
 void klVSLCosh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdCosh( n,  v.getMemory(),ans.getMemory());
 
@@ -543,7 +544,7 @@ void klVSLCosh(klVector<double>& v,klVector<double>& ans)
 //vdSinh		Computation of the hyperbolic sine of vector elements
 void klVSLSinh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdSinh( n,  v.getMemory(),ans.getMemory());
@@ -553,7 +554,7 @@ void klVSLSinh(klVector<double>& v,klVector<double>& ans)
 //vdTanh		Computation of the hyperbolic tangent of vector elements
 void klVSLTanh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdTanh( n,  v.getMemory(),ans.getMemory());
@@ -563,7 +564,7 @@ void klVSLTanh(klVector<double>& v,klVector<double>& ans)
 //vdAcosh		Computation of the inverse hyperbolic cosine of vector elements
 void klVSLAcosh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdAcosh( n,  v.getMemory(),ans.getMemory());
@@ -573,7 +574,7 @@ void klVSLAcosh(klVector<double>& v,klVector<double>& ans)
 //vdAsinh		Computation of the inverse hyperbolic sine of vector elements
 void klVSLAsinh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdAsinh( n,  v.getMemory(),ans.getMemory());
@@ -583,7 +584,7 @@ void klVSLAsinh(klVector<double>& v,klVector<double>& ans)
 //vdAtanh		Computation of the inverse hyperbolic tangent of vector elements
 void klVSLAtanh(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdAtanh( n,  v.getMemory(),ans.getMemory());
 
@@ -592,7 +593,7 @@ void klVSLAtanh(klVector<double>& v,klVector<double>& ans)
 //vdErf		Computation of the error function value of vector elements
 void klVSLErf(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdErf( n,  v.getMemory(),ans.getMemory());
@@ -602,7 +603,7 @@ void klVSLErf(klVector<double>& v,klVector<double>& ans)
 //vdErfc		Computation of the complementary error function value of vector elements
 void klVSLErfc(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdErfc( n,  v.getMemory(),ans.getMemory());
@@ -612,7 +613,7 @@ void klVSLErfc(klVector<double>& v,klVector<double>& ans)
 //vdCdfNorm		Computation of the cumulative normal distribution function value of vector elements
 void klVSLCdfNorm(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdCdfNorm( n,  v.getMemory(),ans.getMemory());
@@ -622,7 +623,7 @@ void klVSLCdfNorm(klVector<double>& v,klVector<double>& ans)
 //vdErfInv		Computation of the inverse error function value of vector elements
 void klVSLErfInv(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdErfInv( n,  v.getMemory(),ans.getMemory());
@@ -632,7 +633,7 @@ void klVSLErfInv(klVector<double>& v,klVector<double>& ans)
 //vdErfcInv		Computation of the inverse complementary error function value of vector elements
 void klVSLErfcInv(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdErfcInv( n,  v.getMemory(),ans.getMemory());
@@ -642,7 +643,7 @@ void klVSLErfcInv(klVector<double>& v,klVector<double>& ans)
 //vdCdfNormInv		Computation of the inverse cumulative normal distribution function value of vector elements
 void klVSLCdfNormInv(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdCdfNormInv( n,  v.getMemory(),ans.getMemory());
@@ -652,7 +653,7 @@ void klVSLCdfNormInv(klVector<double>& v,klVector<double>& ans)
 //vdLGamma		Computation of the natural logarithm for the absolute value of the gamma function of vector elements
 void klVSLLGamma(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdLGamma( n,  v.getMemory(),ans.getMemory());
 
@@ -661,7 +662,7 @@ void klVSLLGamma(klVector<double>& v,klVector<double>& ans)
 //vdTGamma		Computation of the gamma function of vector elements 
 void klVSLTGamma(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	vdTGamma( n,  v.getMemory(),ans.getMemory());
 
 }
@@ -669,7 +670,7 @@ void klVSLTGamma(klVector<double>& v,klVector<double>& ans)
 //vdFloor		Rounding towards minus infinity
 void klVSLFloor(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdFloor( n,  v.getMemory(),ans.getMemory());
 
@@ -678,7 +679,7 @@ void klVSLFloor(klVector<double>& v,klVector<double>& ans)
 //vdCeil		Rounding towards plus infinity
 void klVSLCeil(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 
 	vdCeil( n,  v.getMemory(),ans.getMemory());
@@ -688,7 +689,7 @@ void klVSLCeil(klVector<double>& v,klVector<double>& ans)
 //vdTrunc		Rounding towards zero infinity
 void klVSLTrunc(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 
 	vdTrunc( n,  v.getMemory(),ans.getMemory());
 
@@ -696,7 +697,7 @@ void klVSLTrunc(klVector<double>& v,klVector<double>& ans)
 //vdRound		Rounding to nearest integer
 void klVSLRound(klVector<double>& v,klVector<double>& ans)
 {
-	const __int64 n = v.getColumns();
+	const __int64_t n = v.getColumns();
 	vdRound( n,  v.getMemory(),ans.getMemory());
 }
 
@@ -706,7 +707,7 @@ void klVSLRound(klVector<double>& v,klVector<double>& ans)
 //	vmlSetMode( VML_LA | VML_FTZDAZ_ON | VML_ERRMODE_ERRNO );
 //	if(v->getColumns() != b->getColumns() )
 //		ANSI_INFO; throw klError(err + "Range Argument Exception in klVSLAdd";
-//	const __int64 n = v->getColumns();
+//	const __int64_t n = v->getColumns();
 //	
 //	if(!inplace)
 //	{

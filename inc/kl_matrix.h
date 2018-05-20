@@ -16,23 +16,26 @@
 #include <vector>
 #include <list>
 #include <complex>
+#include <typeinfo>
+#include <stdio.h>
+
 using namespace std;
 
 #ifdef _DEBUGKL
-extern __int64 globalKlMatrixCopyConstructorCallCount;
-extern __int64 globalKlMatrixMoveConstructorCallCount;
+extern __int64_t globalKlMatrixCopyConstructorCallCount;
+extern __int64_t globalKlMatrixMoveConstructorCallCount;
 
-extern __int64 globalKlMatrixCopyConstructorBytesCount;
-extern __int64 globalKlMatrixMoveConstructorBytesCount;
+extern __int64_t globalKlMatrixCopyConstructorBytesCount;
+extern __int64_t globalKlMatrixMoveConstructorBytesCount;
 #endif
 
 
-template<class TYPE> class klMatrix: public klRefCount<klMutex>
+template<class TYPE> class klMatrix
 {
 public:
-	klMatrix(TYPE* mem,__int64 row,__int64 col,bool own=0) 
+	klMatrix(TYPE* mem,__int64_t row,__int64_t col,bool own=0) 
 	{
-		__int64 i;
+		__int64_t i;
 		_vectors=new klVector<TYPE>[row];
 		for(i=0;i<row;i++)
 			(_vectors+i)->setup(col,0,mem+i*col);
@@ -47,11 +50,11 @@ public:
 		_mgr=0;
 	}
 
-	klMatrix(klMemMgr* mgr, __int64 row, __int64 col) 
+	klMatrix(klMemMgr* mgr, __int64_t row, __int64_t col) 
 	{                   
 		_memory=(TYPE*)mgr->allocate(row*col*sizeof(TYPE) );
 		_mgr=mgr;
-		__int64 i;
+		__int64_t i;
 		_vectors=new klVector<TYPE>[row];
 		for(i=0;i<row;i++)
 			(_vectors+i)->setup(col,0,_memory+i*col);
@@ -62,11 +65,11 @@ public:
 
 	}
 
-	klMatrix(__int64 row,__int64 col) 
+	klMatrix(__int64_t row,__int64_t col) 
 	{
 		size_t memrequest = row*col;
 		_memory=new TYPE[memrequest];
-		__int64 i;
+		__int64_t i;
 		_vectors=new klVector<TYPE>[row];
 		for(i=0;i<row;i++)
 			(_vectors+i)->setup(col,0,_memory+i*col);
@@ -99,7 +102,7 @@ public:
 		_contiguous=true;
 		_own=1;
 		setup(_row,_col,_mgr);
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -108,7 +111,7 @@ public:
 			}
 		}
 #ifdef _DEBUGKL
-		  __int64 byteCount = _row*_col * sizeof(TYPE);
+		  __int64_t byteCount = _row*_col * sizeof(TYPE);
 		  globalKlMatrixCopyConstructorBytesCount +=byteCount;
 		  cerr<<"klMatrix(klMatrix<TYPE>& src) call count = "<<globalKlMatrixCopyConstructorCallCount++<<" Bytes Count "<<globalKlMatrixCopyConstructorBytesCount<<endl; 
 #endif
@@ -121,7 +124,7 @@ public:
 	{
 
 #ifdef _DEBUGKL
-		  __int64 byteCount = _row*_col * sizeof(TYPE);
+		  __int64_t byteCount = _row*_col * sizeof(TYPE);
 		  globalKlMatrixMoveConstructorBytesCount +=byteCount;
 		  cerr<<"klMatrix(klMatrix<TYPE>&& src) call count = "<<globalKlMatrixMoveConstructorCallCount++<<" Bytes Count "<<globalKlMatrixMoveConstructorBytesCount<<endl; 
 #endif
@@ -161,7 +164,7 @@ public:
 		setup(_row,_col,src._mgr);
 		_mgr=src._mgr;//don't step on our mgr until we've had the opportunity to free resources
 
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -172,13 +175,13 @@ public:
 		return *this;
 	}
 
-	klVector<TYPE>& operator[](__int64 row) const 
+	klVector<TYPE>& operator[](__int64_t row) const 
 	{
 		if(row<_row )
 			return _vectors[row]; 
 		else
 		{
-			ANSI_INFO; throw klError(err + " klVector<TYPE>& operator[](__int64 row) const ERROR: Memory index out of range in klMatrix");
+			ANSI_INFO; throw klError(err + " klVector<TYPE>& operator[](__int64_t row) const ERROR: Memory index out of range in klMatrix");
 		}
 	}
 
@@ -194,7 +197,7 @@ public:
 		else 
 			product.setup(_row,a.getColumns(),0);
 
-		__int64 i,j,k;
+		__int64_t i,j,k;
 		//#pragma omp parallel num_threads(omp_get_num_procs( ) )
 		for(i=0;i<_row;i++)
 		{
@@ -220,7 +223,7 @@ public:
 			product.setup(_row,_mgr);
 		else 
 			product.setup(_row);
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 		{
 			TYPE temp=0;
@@ -236,8 +239,8 @@ public:
 	//Sets the entries of this klMatrix to c.
 	klMatrix<TYPE>& operator=(TYPE c) 
 	{
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -252,8 +255,8 @@ public:
 
 	klMatrix<TYPE>& operator+=(TYPE c)
 	{     
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -272,8 +275,8 @@ public:
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE>& klMatrix<TYPE>::operator+=(const klMatrix<TYPE> &c) ERROR: incompatible dimensions.");
 		}
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -291,8 +294,8 @@ public:
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE>& klMatrix<TYPE>::operator+=(const klMatrix<TYPE> &c) ERROR: incompatible dimensions.");
 		}
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -306,8 +309,8 @@ public:
 
 	klMatrix<TYPE>& operator-=(TYPE c)
 	{
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -331,7 +334,7 @@ public:
 		else 
 			product.setup(_row,a.getColumns(),0);
 
-		__int64 i,j,k;
+		__int64_t i,j,k;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<a.getColumns();j++)
@@ -349,8 +352,8 @@ public:
 	klMatrix<TYPE>& operator*=(TYPE c)
 	{
 
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -368,8 +371,8 @@ public:
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE>& klMatrix<TYPE>::operator/=(TYPE c): ERROR: attempting to divide by zero .");
 		}
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -389,8 +392,8 @@ public:
 			ANSI_INFO; throw klError(err + "Bad dimensions in klMatrix<TYPE> operator==(const klMatrix<TYPE> &m)");
 		}
 
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<m.getRows();i++)
 		{
 			for(j=0;j<m.getColumns();j++)
@@ -410,8 +413,8 @@ public:
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE>& klMatrix<TYPE>::operator+=(const klMatrix<TYPE> &c) ERROR: incompatible dimensions.");
 		}
-		__int64 i;
-		__int64 j;
+		__int64_t i;
+		__int64_t j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -427,14 +430,14 @@ public:
 		return *this;
 	}
 		
-	void setRow(__int64 j,klVector<TYPE> r)
+	void setRow(__int64_t j,klVector<TYPE> r)
 	{
 		if(r.getColumns() != _col)
 		{
-			ANSI_INFO; throw klError(err + "klMatrix::setRow(__int64 j,klVector<TYPE> r) ERROR: invalid dimension in setRow parameter");
+			ANSI_INFO; throw klError(err + "klMatrix::setRow(__int64_t j,klVector<TYPE> r) ERROR: invalid dimension in setRow parameter");
 		}
 
-		__int64 i;
+		__int64_t i;
 
 		for(i=0;i<_col;i++)
 		{
@@ -449,7 +452,7 @@ public:
 			transpose.setup(_col,_row,_mgr);
 		else 
 			transpose.setup(_col,_row,0);
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -469,7 +472,7 @@ public:
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE> threshold(double low=DBL_MIN, double high=DBL_MAX) called with high<low");
 		}
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -505,7 +508,7 @@ public:
 	}
 
 	//Returns the subblock (i,j):(k,l) indicated by the indices.
-	klMatrix<TYPE> getSubBlock(__int64 i,__int64 j,__int64 k,__int64 l)
+	klMatrix<TYPE> getSubBlock(__int64_t i,__int64_t j,__int64_t k,__int64_t l)
 	{
 		//First Verify the indices are in range
 		if(i<0|| j<0|| k-i<0 || l-j<0 || k>_row || l>_col)
@@ -516,7 +519,7 @@ public:
 			throw klError(err);			
 		}
 		klMatrix<TYPE> ret(k-i+1,l-j+1);
-		__int64 n,m;
+		__int64_t n,m;
 		for(n=i;n<=k;n++)
 			for(m=j;m<=l;m++)
 			{
@@ -527,29 +530,29 @@ public:
 	}
 
 	//Sets the subblock (i,j):(k,l) indicated by the indices.
-	void setSubBlock(klMatrix<TYPE> block,__int64 i,__int64 j)
+	void setSubBlock(klMatrix<TYPE> block,__int64_t i,__int64_t j)
 	{
 		//First Verify the indices are in range
-		__int64 k=block.getRows()+i-1;
-		__int64 l=block.getColumns()+j-1;
+		__int64_t k=block.getRows()+i-1;
+		__int64_t l=block.getColumns()+j-1;
 		if(k-i<=0 || l-j<=0 || k>_row || l>_col)
 		{
 			ANSI_INFO; throw klError(err + "klMatrix<TYPE> klMatrix<TYPE>::getSubBlock ERROR index out of bounds.");
 		}
-		__int64 n,m;
+		__int64_t n,m;
 		for(n=i;n<=k;n++)
 			for(m=j;m<=l;m++)
 				(_vectors+m)->operator[](n)=block[n-i][m-j];
 	}
 	
-	void setColumn(__int64 i,klVector<TYPE> v)
+	void setColumn(__int64_t i,klVector<TYPE> v)
 	{
 		if (_row != v.getRowSize())
 		{
 			ANSI_INFO; throw klError(err + "Bad dimensions in klMatrix::setRow");
 		}
-		__int64 n = 0;
-		__int64 m =i;
+		__int64_t n = 0;
+		__int64_t m =i;
 			for(n=0;n<=_row;n++)
 				(_vectors+n)->operator[](i)=v[n];
 	}
@@ -564,14 +567,14 @@ public:
 		}
 		klMatrix<TYPE> temp;
 		temp=this->transpose(); //deep copy 
-		__int64 size=0;
-		__int64 i,j;
-		__int64 index=0;
+		__int64_t size=0;
+		__int64_t i,j;
+		__int64_t index=0;
 		char uplo='L';
 		int info=0;
 		int n=_row;
 		int m=_col;
-		size_t ipivSz=max(1,min(_row,_col));
+		size_t ipivSz=std::max<int>(1,std::min(_row,_col));
 		int* ipiv=new int[ipivSz];
 		//Calculating the determinanat via cofactors is O(n!)
 		//An LU decomp, reduces to O(\frac{2 n^3}{3} )
@@ -646,7 +649,7 @@ public:
 
 		klMatrix<double> a;
 		a.setup(_row,_col,_mgr);// bbc revisit - this is a problem if TYPE is not double 
-		__int64 i,j;
+		__int64_t i,j;
 		for(i=0;i<_row;i++)
 			for(j=0;j<_col;j++)
 				a[i][j]=(_vectors+j)->operator [](i);
@@ -686,13 +689,14 @@ public:
 	//If the matrix is not square, we return \sum\limits_{i=0}^{min{_row,_col}}   
 	TYPE trace()
 	{
-		__int64 min=min(_row,_col);
-		__int64 i;
+		__int64_t min=min(_row,_col);
+		__int64_t i;
 		TYPE r=0;
 		for(i=0;i<min;i++)
 		{
 			r += (_vectors+i)->operator [](i);
 		}
+		return r;
 	}
 
 	//See float and double specializations.
@@ -710,27 +714,27 @@ public:
 	}
 
 	//Returns the 0-based indexed column
-	klVector<TYPE> getColumn(__int64 col)
+	klVector<TYPE> getColumn(__int64_t col)
 	{
 		klVector<TYPE> column;
 		if(_mgr)
 			column.setup(_row,_mgr);
 		else
 			column.setup(_row);
-		__int64 i;
+		__int64_t i;
 		for(i=0;i<_row;i++)
 			column[i]=(_vectors+i)->operator[](col);
 		return column;
 	}
 
 	
-	__int64 getRows() const
+	__int64_t getRows() const
 	{
 		return _row;
 	}
 
 	
-	__int64 getColumns()const
+	__int64_t getColumns()const
 	{
 		return _col;
 	}
@@ -758,9 +762,9 @@ public:
 		klMatrix<TYPE> ans(_row,_col);
 		TYPE* pM=ans.getMemory();
 		TYPE* pI=getMemory();
-		__int64 i=0;
-		__int64 j=0;
-		__int64 k=0;
+		__int64_t i=0;
+		__int64_t j=0;
+		__int64_t k=0;
 		for(i=0;i<_row;i++)
 		{
 			for(j=0;j<_col;j++)
@@ -779,12 +783,12 @@ public:
 		{
 			unsigned long nan[2]={0xffffffff, 0x7fffffff};
 			double x = *( double* )nan;
-			bool check = _isnan(x);
+			bool check = isnan(x);
 			if (check)
 			{
 				//memset(_memory,0,row+col);
 				//if exponent = 2e - 1 and fraction is not 0, the number being represented is not a number (NaN). 
-				__int64 i,j;
+				__int64_t i,j;
 				for(i=0;i<_row;i++)
 					for(j=0;j<_col;j++)
 						(_vectors+j)->operator [](i)=x;
@@ -794,12 +798,12 @@ public:
 		{
 			unsigned short nan[2]={0xffff, 0x7fff};
 			float x = *( float* )nan;
-			bool check = _isnan(x);
+			bool check = isnan(x);
 			if (check)
 			{
 				//memset(_memory,0,row+col);
 				//if exponent = 2e - 1 and fraction is not 0, the number being represented is not a number (NaN). 
-				__int64 i,j;
+				__int64_t i,j;
 				for(i=0;i<_row;i++)
 					for(j=0;j<_col;j++)
 						(_vectors+j)->operator [](i)=x;
@@ -812,7 +816,7 @@ public:
 		return sizeof(TYPE);
 	}
 
-	void setup(__int64 row,__int64 col,klMemMgr* mgr=0)
+	void setup(__int64_t row,__int64_t col,klMemMgr* mgr=0)
 	{
 		if(_own && _memory)
 		{
@@ -841,7 +845,7 @@ public:
 		_vectors=new klVector<TYPE>[_row];
 		_own=true;
 
-		__int64 i;
+		__int64_t i;
 		for(i=0;i<_row;i++)
 			(_vectors+i)->setup(col,0,_memory+i*_col);
 	}
@@ -895,12 +899,12 @@ public:
 	}
 protected:
 	klVector<TYPE>* _vectors;
-	mutable __int64 _own;
+	mutable __int64_t _own;
 	
 	//It is possible to set up matrices with non contiguous memory layout.	
 	bool _contiguous;
-	__int64  _row;
-	__int64  _col;
+	__int64_t  _row;
+	__int64_t  _col;
 	TYPE* _memory;
 	klMemMgr* _mgr;
 	string _filename;
@@ -1064,7 +1068,7 @@ template< > klMatrix<double> klMatrix<double>::operator*(klMatrix<double> a) con
 template<class TYPE, class TYPE1> klVector<TYPE> klApplyFn(TYPE1 (*f)(TYPE1), const klVector<TYPE> &c)
 {
 	klVector<TYPE> r(c.getColumns() );
-	__int64 i;
+	__int64_t i;
 	for (i=0;i<c.getColumns();i++)
 		r[i]=TYPE(f(TYPE1(c[i])));
 	return r;
@@ -1074,8 +1078,8 @@ template<class TYPE, class TYPE1> klVector<TYPE> klApplyFn(TYPE1 (*f)(TYPE1), co
 template<class TYPE, class TYPE1> klMatrix<TYPE> klApplyFn(TYPE1 (*f)(TYPE1), const klMatrix<TYPE> &c)
 {
 	klMatrix<TYPE> r(c.getRows(),c.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for ( i=0;i<c.getRows();i++)
 		for ( j=0;j<c.getColumns();j++)
 			//out(i,j)=static_cast<T>(f(static_cast<fT>(data(i,j))));
@@ -1091,8 +1095,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator+(const klMatrix<TYPE> 
 		ANSI_INFO; throw klError(err + "const klMatrix<TYPE> operator+(const klMatrix<TYPE> &c1, const klMatrix<TYPE> &c2) ERROR: incompatible dimensions.");
 	}
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1107,8 +1111,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator+(const klMatrix<TYPE> 
 template<class TYPE> inline const klMatrix<TYPE> operator+(const klMatrix<TYPE> &c1, TYPE c2)
 {
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1123,8 +1127,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator+(const klMatrix<TYPE> 
 template<class TYPE> inline const klMatrix<TYPE> operator+(TYPE c1, const klMatrix<TYPE> &c2)
 {
 	klMatrix<TYPE> r(c2.getRows(),c2.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c2.getRows();i++)
 	{
 		for(j=0;j<c2.getColumns();j++)
@@ -1143,8 +1147,8 @@ template<class TYPE> inline	const klMatrix<TYPE> operator-(const klMatrix<TYPE> 
 		ANSI_INFO; throw klError(err + "const klMatrix<TYPE> operator+(const klMatrix<TYPE> &c1, const klMatrix<TYPE> &c2) ERROR: incompatible dimensions.");
 	}
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1160,8 +1164,8 @@ template<class TYPE> inline	const klMatrix<TYPE> operator-(const klMatrix<TYPE> 
 template<class TYPE> inline	const klMatrix<TYPE> operator-(const klMatrix<TYPE> &c2, TYPE c1)
 {
 	klMatrix<TYPE> r(c2.getRows(),c2.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c2.getRows();i++)
 	{
 		for(j=0;j<c2.getColumns();j++)
@@ -1177,8 +1181,8 @@ template<class TYPE> inline	const klMatrix<TYPE> operator-(const klMatrix<TYPE> 
 template<class TYPE> inline	const klMatrix<TYPE> operator-(TYPE c1, const klMatrix<TYPE> &c2)
 {
 	klMatrix<TYPE> r(c2.getRows(),c2.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c2.getRows();i++)
 	{
 		for(j=0;j<c2.getColumns();j++)
@@ -1191,27 +1195,6 @@ template<class TYPE> inline	const klMatrix<TYPE> operator-(TYPE c1, const klMatr
 
 }
 
-
-//bbcrevisit TEST!
-template<class TYPE> inline	const klMatrix<TYPE> operator-(const klMatrix<TYPE> &c)
-{
-	if(this._row != c.getRows() ||this._col!=c.getColumns())
-	{
-		ANSI_INFO; throw klError(err + "Bad dimensions in klMatrix<TYPE> operator-(const klMatrix<TYPE> &c)");
-	}
-	klMatrix<TYPE> r(c.getRows(),c.getColumns());
-	__int64 i;
-	__int64 j;
-	for(i=0;i<c.getRows();i++)
-	{
-		for(j=0;j<c.getColumns();j++)
-		{
-			r[i][j]=(_vectors+i)->operator [](j) - c[i][j];
-		}
-
-	}
-	return r;
-}
 template<class TYPE> inline const klMatrix<TYPE> operator/(const klMatrix<TYPE> &c1, TYPE c2)
 {
 	if(c2==0)
@@ -1219,8 +1202,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator/(const klMatrix<TYPE> 
 		ANSI_INFO; throw klError(err + "klMatrix<TYPE> operator/(const klMatrix<TYPE> &c1, TYPE c2) : ERROR: attempting to divide by zero .");
 	}
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1239,8 +1222,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator/(TYPE c2,const klMatri
 		ANSI_INFO; throw klError(err + "klMatrix<TYPE> operator/(const klMatrix<TYPE> &c1, TYPE c2) : ERROR: attempting to divide by zero .");
 	}
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1262,8 +1245,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator/(klMatrix<TYPE> &c1,co
 
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
 
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1282,8 +1265,8 @@ template<class TYPE> inline const klMatrix<TYPE> operator/(klMatrix<TYPE> &c1,co
 template<class TYPE> inline	const klMatrix<TYPE> operator*(const klMatrix<TYPE> &c1, TYPE c2 )
 {
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1299,8 +1282,8 @@ template<class TYPE> inline	const klMatrix<TYPE> operator*(const klMatrix<TYPE> 
 template<class TYPE> inline const klMatrix<TYPE> operator*(TYPE c2, const klMatrix<TYPE> &c1)
 {
 	klMatrix<TYPE> r(c1.getRows(),c1.getColumns());
-	__int64 i;
-	__int64 j;
+	__int64_t i;
+	__int64_t j;
 	for(i=0;i<c1.getRows();i++)
 	{
 		for(j=0;j<c1.getColumns();j++)
@@ -1315,15 +1298,15 @@ template<class TYPE> inline const klMatrix<TYPE> operator*(TYPE c2, const klMatr
 
 template<class TYPE> inline	const klVector<TYPE> klMatrixToLowerRowType(const klMatrix<TYPE> &c)
 {
-	__int64 i;
-	__int64 j;
-	__int64 lowerSize = 0;
+	__int64_t i;
+	__int64_t j;
+	__int64_t lowerSize = 0;
 	for(i=1;i<=c.getRows();i++)
 		lowerSize +=i;
 
 	klVector<TYPE> L(lowerSize) ;
 	L=(TYPE)0.0;
-	__int64 index=0;
+	__int64_t index=0;
 	for(int i=0;i<c.getRows();i++)
 	{	
 		for(int j =0;j<c.getColumns();j++)
@@ -1339,15 +1322,15 @@ template<class TYPE> inline	const klVector<TYPE> klMatrixToLowerRowType(const kl
 
 template<class TYPE> inline	const klVector<TYPE> klMatrixToLowerColType(const klMatrix<TYPE> &c)
 {
-	__int64 i;
-	__int64 j;
-	__int64 lowerSize = 0;
+	__int64_t i;
+	__int64_t j;
+	__int64_t lowerSize = 0;
 	for(i=1;i<=c.getRows();i++)
 		lowerSize +=i;
 
 	klVector<TYPE> L(lowerSize) ;
 	L=(TYPE)0.0;
-	__int64 index=0;
+	__int64_t index=0;
 	for(int j =0;j<c.getColumns();j++)
 	{	for(int i=0;i<c.getRows();i++)
 		{
@@ -1398,8 +1381,8 @@ template<class TYPE> klMatrix<TYPE> diag(klVector<TYPE> c)
 {
 	klMatrix<TYPE> result(c.getColumns(),c.getColumns());
 	result=0.0;
-	__int64 i=0;
-	__int64 j=0;
+	__int64_t i=0;
+	__int64_t j=0;
 	for(i=0;i<c.getColumns();i++)
 	{
 		for(j=0;j<c.getColumns();j++)
@@ -1463,7 +1446,7 @@ template<> float klMatrix<float>::norm(bool ell_infty )
 template<  > double klMatrix<double>::ConditionNumber(bool ellone)
 {
 	//Compute the Norm
-	__int64 i,j;
+	__int64_t i,j;
 	
 	double anorm =0.0f;
 	if(ellone)
@@ -1518,7 +1501,7 @@ template<  > double klMatrix<double>::ConditionNumber(bool ellone)
 template<  > float klMatrix<float>::ConditionNumber(bool ellone)
 {
 	//Compute the Norm
-	__int64 i,j;
+	__int64_t i,j;
 	
 	float anorm =0;
 	if(ellone)
@@ -1588,7 +1571,7 @@ inline void minV(const klMatrix<double>& X,klVector<double>& minVals ,bool rowMi
 		{
 			void* pMem =X.getMemory()+i*X.getColumns();
 			const int incX = 1;
-			__int64 index = cblas_idamin (N, (double*)pMem,incX);
+			__int64_t index = cblas_idamin (N, (double*)pMem,incX);
 			minVals[i]=X[i][index];
 		}
 	}
@@ -1607,7 +1590,7 @@ inline void minV(const klMatrix<double>& X,klVector<double>& minVals ,bool rowMi
 		{
 			void* pMem =X.getMemory()+i;
 			const int incX = X.getColumns();
-			__int64 index = cblas_idamin (N, (double*)pMem,incX);
+			__int64_t index = cblas_idamin (N, (double*)pMem,incX);
 			minVals[i]=X[index][i];
 		}
 	}
@@ -1631,7 +1614,7 @@ inline void maxV(const klMatrix<double>& X,klVector<double>& maxVals ,bool rowMi
 		{
 			void* pMem =X.getMemory()+i*X.getColumns();
 			const int incX = 1;
-			__int64 index = cblas_idamax (N, (double*)pMem,incX);
+			__int64_t index = cblas_idamax (N, (double*)pMem,incX);
 			maxVals[i]=X[i][index];
 		}
 	}
@@ -1650,7 +1633,7 @@ inline void maxV(const klMatrix<double>& X,klVector<double>& maxVals ,bool rowMi
 		{
 			void* pMem =X.getMemory()+i;
 			const int incX = X.getColumns();
-			__int64 index = cblas_idamax (N, (double*)pMem,incX);
+			__int64_t index = cblas_idamax (N, (double*)pMem,incX);
 			maxVals[i]=X[index][i];
 		}
 	}
@@ -1702,9 +1685,9 @@ class klBinaryIO
 {
 public:
 	
-    const static __int64 _chunkThresh=4294967296LL;
+    const static __int64_t _chunkThresh=4294967296LL;
 
-	const static __int64 _chunkSize = 1073741824LL;
+	const static __int64_t _chunkSize = 1073741824LL;
 
 	static inline void WriteWinx64( klMatrix<double>& out, string fileName)
 	{
@@ -1719,13 +1702,13 @@ public:
 					ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::WriteWinx64( klMatrix<double>& out, string fileName)");
 				}
 				
-				__int64 ebuf[2]={0,0};
+				__int64_t ebuf[2]={0,0};
 				ebuf[0]=out.getRows();
 				ebuf[1]=out.getColumns();
 
-				fwrite(ebuf, sizeof(__int64),2,fd);
+				fwrite(ebuf, sizeof(__int64_t),2,fd);
 
-				__int64 writeSize = sizeof(double)*ebuf[0]*ebuf[1];
+				__int64_t writeSize = sizeof(double)*ebuf[0]*ebuf[1];
 
 				if(writeSize < _chunkThresh)
 				{					
@@ -1735,9 +1718,9 @@ public:
 				}
 				else
 				{
-					__int64 chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
-					__int64 numWrites=0;
-					__int64 bytesRemaining = writeSize;
+					__int64_t chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
+					__int64_t numWrites=0;
+					__int64_t bytesRemaining = writeSize;
 					while(bytesRemaining>0)
 					{
 						void* writeP = out.getMemory();
@@ -1797,12 +1780,12 @@ public:
 				{
 					ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::WriteWinx64(klVector<double>& out, string fileName)");
 				}
-				__int64 ebuf[1]={0};
+				__int64_t ebuf[1]={0};
 				ebuf[0]=out.getColumns();
 				
-				fwrite(ebuf, sizeof(__int64),1,fd);
+				fwrite(ebuf, sizeof(__int64_t),1,fd);
 
-				__int64 writeSize = sizeof(double)*ebuf[0];
+				__int64_t writeSize = sizeof(double)*ebuf[0];
 
 				if(writeSize < _chunkThresh)
 				{					
@@ -1812,9 +1795,9 @@ public:
 				}
 				else
 				{
-					__int64 chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
-					__int64 numWrites=0;
-					__int64 bytesRemaining = writeSize;
+					__int64_t chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
+					__int64_t numWrites=0;
+					__int64_t bytesRemaining = writeSize;
 					while(bytesRemaining>0)
 					{
 						void* writeP = out.getMemory();
@@ -1875,9 +1858,9 @@ public:
 				{
 					ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::MatReadWinx64(string fileName, klMatrix<double>& klmd )");
 				}
-				__int64 ebuf[2]={0,0};
+				__int64_t ebuf[2]={0,0};
 
-				fread(ebuf, sizeof(__int64),2,fd);
+				fread(ebuf, sizeof(__int64_t),2,fd);
 
 				if(ebuf[0]>0 && ebuf[1]>0)
 				{
@@ -1887,7 +1870,7 @@ public:
 					}
 					
 					void* readP = klmd.getMemory();
-					__int64 readSize = sizeof(double)*ebuf[0]*ebuf[1];
+					__int64_t readSize = sizeof(double)*ebuf[0]*ebuf[1];
 
 					if(readSize < _chunkThresh)
 					{
@@ -1895,9 +1878,9 @@ public:
 					}
 					else
 					{
-						__int64 chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
-						__int64 numReads=0;
-						__int64 bytesRemaining = readSize;
+						__int64_t chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
+						__int64_t numReads=0;
+						__int64_t bytesRemaining = readSize;
 						while(bytesRemaining>0)
 						{
 							readP = klmd.getMemory();
@@ -1949,7 +1932,7 @@ public:
 	//bbctodo - get move constructor figured out
 	/*static inline klMatrix<double>& MatReadWinx64(string fileName)  
 	{
-	__int64 rows,cols;
+	__int64_t rows,cols;
 	klBinaryIO::QueryWinx64(fileName,rows,cols);
 
 	klMatrix<double> klmd(rows,cols);
@@ -1962,9 +1945,9 @@ public:
 	fd = fopen( fileName.c_str(), "rb" );
 	if (fd==NULL)
 	{ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::MatReadWinx64(string fileName, klMatrix<double>& klmd )");}
-	__int64 ebuf[2]={0,0};
+	__int64_t ebuf[2]={0,0};
 
-	fread(ebuf, sizeof(__int64),2,fd);
+	fread(ebuf, sizeof(__int64_t),2,fd);
 
 	if(ebuf[0]>0 && ebuf[1]>0)
 	{
@@ -1998,7 +1981,7 @@ public:
 	}
 	}*/
 
-	static inline bool QueryWinx64(string fileName, __int64& rows, __int64&  cols)
+	static inline bool QueryWinx64(string fileName, __int64_t& rows, __int64_t&  cols)
 	{ 
 		FILE* fd=NULL;
 		try
@@ -2006,19 +1989,19 @@ public:
 			fd = fopen( fileName.c_str(), "rb" );
 			if (fd==NULL)
 			{
-				ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::QueryWinx64(string fileName, __int64& rows, __int64&  cols)");
+				ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::QueryWinx64(string fileName, __int64_t& rows, __int64_t&  cols)");
 			}
 			if(fileName.substr(fileName.find_last_of(".") + 1) == "klvd")
 			{
-				__int64 ebuf[1]={0};
-				fread(ebuf, sizeof(__int64),1,fd);
+				__int64_t ebuf[1]={0};
+				fread(ebuf, sizeof(__int64_t),1,fd);
 				rows =0;
 				cols = ebuf[0];
 			}
 			if(fileName.substr(fileName.find_last_of(".") + 1) == "klmd")
 			{
-				__int64 ebuf[2]={0,0};
-				fread(ebuf, sizeof(__int64),2,fd);
+				__int64_t ebuf[2]={0,0};
+				fread(ebuf, sizeof(__int64_t),2,fd);
 				rows=ebuf[0];
 				cols=ebuf[1];
 			}
@@ -2042,9 +2025,9 @@ public:
 				{
 					ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::VecReadWinx64(string fileName,klVector<double>& klvd)");
 				}
-				__int64 ebuf[1]={0};
+				__int64_t ebuf[1]={0};
 
-				fread(ebuf, sizeof(__int64),1,fd);
+				fread(ebuf, sizeof(__int64_t),1,fd);
 
 				if(ebuf[0]>0)
 				{
@@ -2054,7 +2037,7 @@ public:
 					}
 								
 					void* readP = klvd.getMemory();
-					__int64 readSize = sizeof(double)*ebuf[0];
+					__int64_t readSize = sizeof(double)*ebuf[0];
 
 					if(readSize < _chunkThresh)
 					{
@@ -2062,9 +2045,9 @@ public:
 					}
 					else
 					{
-						__int64 chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
-						__int64 numReads=0;
-						__int64 bytesRemaining = readSize;
+						__int64_t chunkSize = _chunkSize;//In bytes, so divide by 8 in the write call
+						__int64_t numReads=0;
+						__int64_t bytesRemaining = readSize;
 						while(bytesRemaining>0)
 						{
 							readP = klvd.getMemory();
@@ -2119,10 +2102,10 @@ public:
 	//	{
 	//		if(fd==NULL)
 	//		{	ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::WriteWinx64( klMatrix<double>& out, string fileName))";} 
-	//		__int64 ebuf[2]={0,0};
+	//		__int64_t ebuf[2]={0,0};
 	//		ebuf[0]=out.getRows();
 	//		ebuf[1]=out.getColumns();
-	//		fwrite(ebuf, sizeof(__int64),2,fd);
+	//		fwrite(ebuf, sizeof(__int64_t),2,fd);
 	//		void* writeP = out.getMemory();
 	//		fwrite(writeP,sizeof(double),ebuf[0]*ebuf[1],fd);
 	//		fclose(fd);
@@ -2150,9 +2133,9 @@ public:
 	//	{
 	//		if (fd ==NULL)
 	//		{	ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::WriteWinx64(klVector<double>& out, string fileName)");}
-	//		__int64 ebuf[1]={0};
+	//		__int64_t ebuf[1]={0};
 	//		ebuf[0]=out.getColumns();
-	//		fwrite(ebuf, sizeof(__int64),1,fd);
+	//		fwrite(ebuf, sizeof(__int64_t),1,fd);
 	//		void* writeP = out.getMemory();
 	//		fwrite(writeP,sizeof(double),ebuf[0],fd);
 	//		fclose(fd);
@@ -2181,9 +2164,9 @@ public:
 			{
 				ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::MatReadWinx64(string fileName, klMatrix<double>& klmd )");
 			}
-			__int64 ebuf[2]={0,0};
+			__int64_t ebuf[2]={0,0};
 
-			fread(ebuf, sizeof(__int64),2,fd);
+			fread(ebuf, sizeof(__int64_t),2,fd);
 
 			if(ebuf[0]>0 && ebuf[1]>0)
 			{
@@ -2223,9 +2206,9 @@ public:
 			{
 				ANSI_INFO; throw klError(err + "Bad file handle in klBinaryIO::VecReadWinx64(string fileName,klVector<double>& klvd)");
 			}
-			__int64 ebuf[1]={0};
+			__int64_t ebuf[1]={0};
 
-			fread(ebuf, sizeof(__int64),1,fd);
+			fread(ebuf, sizeof(__int64_t),1,fd);
 
 			if(ebuf[0]>0)
 			{
@@ -2259,14 +2242,5 @@ public:
 
 
 };
-
-
-//Smart Pointer Defs
-typedef klSmartPtr<klMatrix<double> >  klDoubleMatrixPtr;
-typedef klSmartPtr<klMatrix<complex<double> > >  klComplexDoubleMatrixPtr;
-typedef klSmartPtr<klMatrix<complex<float> > >  klComplexFloatMatrixPtr;
-typedef klSmartPtr<klMatrix<float> >  klFloatMatrixPtr;
-
-
 
 #endif __kl_matrix__

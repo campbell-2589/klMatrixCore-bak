@@ -9,7 +9,7 @@
 
 //Let A \in G_1(n,n) =X : X_{ii} =_d N(0,1) X_{ij} =_d N(0,frac{1}{2}
 //frac{A+A^dag} {2} \in GOE 
-klMatrix<double> SampleGOE( __int64 n , unsigned  seed )
+klMatrix<double> SampleGOE( __int64_t n , unsigned  seed )
 {
 	klMatrix<double> A(n,n);
 	unsigned int i;
@@ -44,7 +44,7 @@ klMatrix<double> SampleGOE( __int64 n , unsigned  seed )
 
 //\beta = 1 flavor - This function samples from the space of covariance matrices for
 //the multivariate normal distribution
-klMatrix<double> SampleWishart( __int64 n , unsigned  seed )
+klMatrix<double> SampleWishart( __int64_t n , unsigned  seed )
 {
 	klMatrix<double> A=SampleGOE(n,seed);
 
@@ -55,29 +55,8 @@ klMatrix<double> SampleWishart( __int64 n , unsigned  seed )
 	return A;
 }
 
-#include "testmatgenunit.h"
-extern bool testmatgen(bool silent);
-#include "kl_matrix.h"
-klMatrix<double> real_2d_array_to_klMatrix(ap::real_2d_array a)
-{
-	int n=a.gethighbound(0)+1;
-	int m=a.gethighbound(1)+1;
 
-	klMatrix<double> matv(n,m);
-	unsigned int i=0;
-	unsigned int j=0;
-	for(i=0;i<n;i++)
-	{
-		for(j=0;j<m;j++)
-		{
-			matv[i][j] = a(i,j);
-		}
-	}
-	return matv;
-
-}
-
-klMatrix<double> SampleSymmetricStandardNormalRM( __int64 n , unsigned  seed )
+klMatrix<double> SampleSymmetricStandardNormalRM( __int64_t n , unsigned  seed )
 {
 	klMatrix<double> A(n,n);
 	unsigned int i;

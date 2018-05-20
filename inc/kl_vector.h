@@ -16,8 +16,14 @@
 //compatible with the Fortran complex layout, that is, the complex type must be a pair of
 //real numbers for the values of real and imaginary parts.
 #include <complex>
-#define MKL_Complex8 std::complex<float>
+
+//#define MKL_Complex16 complex
+
+//#define MKL_Complex8 std::complex<float>
+//
 #define MKL_Complex16 std::complex<double>
+
+
 #include "mkl.h"
 #include "kl_memory.h"
 #include "kl_util.h"
@@ -42,17 +48,13 @@ using namespace std;
 //A=2.0;
 //klout(A);
 
-//Moved to kl_util.h
-//#define ANSI_INFO std::stringstream ANSI_INFO_ss (std::stringstream::in | std::stringstream::out );                            \
-//	ANSI_INFO_ss<<"ANSI COMPILE INFO: " <<__DATE__<<"     "<<__TIME__<<"   "<<__FILE__<<"   "<<__LINE__<<"       "<<std::endl; \
-//	std::string err = ANSI_INFO_ss.str();
 
 #ifdef _DEBUGKL
-extern __int64 globalKlVectorCopyConstructorCallCount;
-extern __int64 globalKlVectorMoveConstructorCallCount;
+extern __int64_t globalKlVectorCopyConstructorCallCount;
+extern __int64_t globalKlVectorMoveConstructorCallCount;
 
-extern __int64 globalKlVectorCopyConstructorBytesCount;
-extern __int64 globalKlVectorMoveConstructorBytesCount;
+extern __int64_t globalKlVectorCopyConstructorBytesCount;
+extern __int64_t globalKlVectorMoveConstructorBytesCount;
 #endif
 
 inline int mkl_eigs_select(double* x,double* y)
@@ -69,11 +71,11 @@ public:
 	static void setklVectorGlobalMemoryManager(klMemMgr* mgr);
 };
 
-template<class TYPE> class klVector: public klRefCount<klMutex>, klGlobalMemoryManager
+template<class TYPE> class klVector: public klGlobalMemoryManager
 {
 public:
 
-	klVector(klMemMgr* mgr,__int64 size,bool own=false) :
+	klVector(klMemMgr* mgr,__int64_t size,bool own=false) :
 	  x0(0),x1(0), y0(0),y1(0),desc("")
 	  {
 		  _mgr=mgr;
@@ -85,7 +87,7 @@ public:
 		  _size=size;
 	  }
 
-	  klVector(TYPE* mem,__int64 size,bool own=false) :
+	  klVector(TYPE* mem,__int64_t size,bool own=false) :
 	  x0(0),x1(0), y0(0),y1(0),desc("")
 	  {
 		  _mMemory=mem;
@@ -94,7 +96,7 @@ public:
 		  _mgr=0;
 	  }
 
-	  klVector(__int64 size) :
+	  klVector(__int64_t size) :
 	  x0(0),x1(0), y0(0),y1(0),desc("")
 	  {
 		  if(_globalMemoryManager==NULL)
@@ -122,7 +124,7 @@ public:
 		  {
 			  ANSI_INFO; throw klError(err + "Range error constructing klVector :klVector(double xStart, double dx,double xEnd) xEnd<=xStart");
 		  }
-		  __int64 size = ceil( (xEnd-xStart) / dx);
+		  __int64_t size = ceil( (xEnd-xStart) / dx);
 
 		  bool okToAllocate = klCheckFreeMemory(size);
 
@@ -165,7 +167,7 @@ public:
 		  _size=0;
 		  _mgr=0;
 		  setup(src.getRowSize(),src._mgr);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  _mMemory[i]=src._mMemory[i];
 		  x0=src.x0;
@@ -174,19 +176,18 @@ public:
 		  y1=src.y1;
 		  desc=src.desc;
 #ifdef _DEBUGKL
-		  __int64 byteCount = _size * sizeof(TYPE);
+		  __int64_t byteCount = _size * sizeof(TYPE);
 		  globalKlVectorCopyConstructorBytesCount +=byteCount;
 		  cerr<<"klVector(klVector<TYPE>& src) call count = "<<globalKlVectorCopyConstructorCallCount++<<" Bytes Count "<<globalKlVectorCopyConstructorBytesCount<<endl; 
 #endif
 	  }
-
 
 	  klVector(klVector<TYPE>&& src)
 		  : _mMemory(src._mMemory), _own(src._own), _size(src._size),  _mgr(src._mgr),  x0(src.x0),
 		  x1(src.x1),  y0(src.y0), y1(src.y1), desc(src.desc)
 	  {
 #ifdef _DEBUGKL
-		  __int64 byteCount = _size * sizeof(TYPE);
+		  __int64_t byteCount = _size * sizeof(TYPE);
 		  globalKlVectorMoveConstructorBytesCount +=byteCount;
 		  cerr<<"klVector(klVector<TYPE>&& src) call count = "<<globalKlVectorMoveConstructorCallCount++<<" Bytes Count "<<globalKlVectorCopyConstructorBytesCount<<endl; 
 #endif
@@ -234,7 +235,7 @@ public:
 	  //Returns a histogram over [a,b]
 	  //Get the full range of the data by calling klVector<TYPE>::setupRange()
 	  //and retrieving it from  klVector<TYPE>::x0 klVector<TYPE>::x1.
-	  klVector<TYPE> histogram(__int64 histogramBins,double a,double b)
+	  klVector<TYPE> histogram(__int64_t histogramBins,double a,double b)
 	  {
 		  if(b<=a)
 		  {
@@ -242,12 +243,12 @@ public:
 		  }
 		  double binSize = double(b-a)/histogramBins; 
 		  TYPE* histogram=new TYPE[histogramBins];
-		  for(__int64 i = 0; i < histogramBins; i++)
+		  for(__int64_t i = 0; i < histogramBins; i++)
 		  {
 			  histogram[i]=0;
 		  }
 
-		  for(__int64 i = 0; i < this->getRowSize(); i++)
+		  for(__int64_t i = 0; i < this->getRowSize(); i++)
 		  {
 			  //int bin=int(double(this->operator[](i))/binSize);
 			  TYPE d0=this->operator[](i);
@@ -267,7 +268,7 @@ public:
 	  klVector<TYPE> sort(bool ascending=true)
 	  {
 		  std::list<TYPE> sortl(0);
-		  for(__int64 i = 0; i < this->getRowSize(); i++)
+		  for(__int64_t i = 0; i < this->getRowSize(); i++)
 		  {
 			  TYPE t=this->operator[](i);
 			  sortl.push_back(t);
@@ -302,7 +303,7 @@ public:
 	  }
 
 	  //When mem!=0, we never own the memory.
-	  void setup(__int64 size,klMemMgr* mgr=0,TYPE* mem=0)
+	  void setup(__int64_t size,klMemMgr* mgr=0,TYPE* mem=0)
 	  {
 		  _size=size;
 		  if(!mem)
@@ -342,17 +343,17 @@ public:
 		  return;
 	  }
 
-	  __int64 getRowSize() const
+	  __int64_t getRowSize() const
 	  {
 		  return _size;
 	  }
 
-	  __int64 getColumns() const
+	  __int64_t getColumns() const
 	  {
 		  return _size;
 	  }
 
-	  __int64 getRows() const
+	  __int64_t getRows() const
 	  {
 		  return _size;
 	  }
@@ -409,7 +410,7 @@ public:
 		  return ans;
 	  }
 
-	  TYPE& operator[](__int64 subscript) const 
+	  TYPE& operator[](__int64_t subscript) const 
 	  {
 		  if(subscript<_size)
 			  return *(_mMemory+(subscript));
@@ -420,18 +421,18 @@ public:
 	  klVector<TYPE>& operator=(const klVector<TYPE>& src)
 	  {
 		  setup(src.getRowSize(),src._mgr);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  _mMemory[i]=src._mMemory[i];
 		  return *this;
 	  }
 
 	  //This returns the vector of differences spaced by delta elements
-	  klVector<TYPE> diff(__int64 delta)
+	  klVector<TYPE> diff(__int64_t delta)
 	  {
 		  if(delta>_size-1)
-		  {ANSI_INFO; throw klError(err + "klvector<TYPE> diff(__int64 delta) ERROR: not enough elements to do the diff.");}
-		  __int64 i;
+		  {ANSI_INFO; throw klError(err + "klvector<TYPE> diff(__int64_t delta) ERROR: not enough elements to do the diff.");}
+		  __int64_t i;
 		  klVector<TYPE> r(_size-delta);
 		  for(i=0;i<_size-delta;i++)
 		  {
@@ -442,7 +443,7 @@ public:
 
 	  klVector<TYPE> absv()
 	  {
-		  __int64 i;
+		  __int64_t i;
 		  klVector<TYPE> r(_size);
 		  for(i=0;i<_size;i++)
 		  {
@@ -453,7 +454,7 @@ public:
 
 	  TYPE sum()
 	  {
-		  __int64 i;
+		  __int64_t i;
 		  TYPE rsum=0;
 		  for(i=0;i<_size;i++)
 		  {
@@ -481,7 +482,7 @@ public:
 
 		  double tmpx1=DBL_MIN;
 
-		  __int64 i;
+		  __int64_t i;
 		  if(getColumns()==0)
 		  {ANSI_INFO; throw klError(err + "klvector:setupRange ERROR : no data in vetor.");}
 
@@ -503,7 +504,7 @@ public:
 	  //Set all values to  the sclar c
 	  void operator=(const TYPE c)
 	  {
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  _mMemory[i]=c;
 
@@ -513,7 +514,7 @@ public:
 	  klVector<bool> operator==(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]==c);
 		  return ans;
@@ -523,7 +524,7 @@ public:
 	  klVector<bool> operator!=(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]!=c);
 		  return ans;
@@ -534,7 +535,7 @@ public:
 	  klVector<bool> operator<(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]<c);
 		  return ans;
@@ -545,7 +546,7 @@ public:
 	  klVector<bool> operator<=(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]<=c);
 		  return ans;
@@ -556,7 +557,7 @@ public:
 	  klVector<bool> operator>(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]>c);
 		  return ans;
@@ -567,7 +568,7 @@ public:
 	  klVector<bool> operator>=(const TYPE c) const
 	  {
 		  klVector<bool> ans(_size);
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 			  ans[i]=(_mMemory[i]>=c);
 		  return ans;
@@ -580,7 +581,7 @@ public:
 		  if(_size!=v.getRows())
 			  return false;
 		  bool ans;
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 		  {
 			  ans=(_mMemory[i]==v[i]);
@@ -594,7 +595,7 @@ public:
 	  bool isPositive()
 	  {
 		  bool ans=true;
-		  __int64 i;
+		  __int64_t i;
 		  for(i=0;i<_size;i++)
 		  {
 			  ans=(_mMemory[i]<=0);
@@ -617,8 +618,8 @@ public:
 
 private:
 	TYPE* _mMemory;
-	__int64 _size;
-	mutable __int64 _own;
+	__int64_t _size;
+	mutable __int64_t _own;
 	klMemMgr* _mgr;
 };
 
@@ -702,7 +703,7 @@ template<  > klVector<float> klVector<float>::pow_alpha(double alpha)
 template<class TYPE  > klVector<TYPE> logReturns(klVector<TYPE> b)
 {
 	klVector<TYPE> t(b.getRowSize() -1);
-	__int64 i;
+	__int64_t i;
 	for(i=0;i<t.getRowSize();i++)
 	{
 		t[i]=log(b[i+1])-log(b[i]);
@@ -742,7 +743,7 @@ template <class TYPE> static inline istream& operator>>(istream& c, klVector<TYP
 // Addition of two klVectors
 template<class TYPE>  klVector<TYPE> operator+(const klVector<TYPE> &v1, const klVector<TYPE> &v2)
 {
-	__int64 i;
+	__int64_t i;
 	if(v1.getColumns() != v2.getColumns() )
 	{ANSI_INFO; throw klError(err + "template<class TYPE> const klVector<TYPE> operator+(const klVector<TYPE> &v1, const klVector<TYPE> &v2) ERROR : bad dimensions");}
 
@@ -758,7 +759,7 @@ template<class TYPE>  klVector<TYPE> operator+(const klVector<TYPE> &v1, const k
 // Addition of a klVector and a scalar
 template<class TYPE>  klVector<TYPE> operator+(const klVector<TYPE> &v, const TYPE t)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -771,7 +772,7 @@ template<class TYPE>  klVector<TYPE> operator+(const klVector<TYPE> &v, const TY
 // Addition of a scalar and a klVector
 template<class TYPE>  klVector<TYPE> operator+(const TYPE t, const klVector<TYPE> &v)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -785,7 +786,7 @@ template<class TYPE>  klVector<TYPE> operator+(const TYPE t, const klVector<TYPE
 // Subtraction of a klVector from a klVector
 template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v1, const klVector<TYPE> &v2)
 {
-	__int64 i;
+	__int64_t i;
 	if(v1.getColumns() != v2.getColumns() )
 	{ANSI_INFO; throw klError(err + "template<class TYPE> const klVector<TYPE> operator+(const klVector<TYPE> &v1, const klVector<TYPE> &v2 ERROR: bad dimensions");}
 
@@ -801,7 +802,7 @@ template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v1, const k
 // Subtraction of a scalar from a klVector
 template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v, const TYPE t)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -814,7 +815,7 @@ template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v, const TY
 // Subtraction of klVector from scalar. Results in a klVector
 template<class TYPE>  klVector<TYPE> operator-(const TYPE t, const klVector<TYPE> &v)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -828,7 +829,7 @@ template<class TYPE>  klVector<TYPE> operator-(const TYPE t, const klVector<TYPE
 // Negation of klVector
 template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -852,7 +853,7 @@ template<class TYPE>  klVector<TYPE> operator-(const klVector<TYPE> &v)
 // Multiplication of a klVector and a scalar
 template<class TYPE>  klVector<TYPE> operator*(const klVector<TYPE> &v, const TYPE t)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -866,7 +867,7 @@ template<class TYPE>  klVector<TYPE> operator*(const klVector<TYPE> &v, const TY
 // Multiplication of a scalar and a klVector. Results in a klVector
 template<class TYPE>  klVector<TYPE> operator*(const TYPE t, const klVector<TYPE> &v)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -880,7 +881,7 @@ template<class TYPE>  klVector<TYPE> operator*(const TYPE t, const klVector<TYPE
 // Subtraction of a klVector from a klVector
 template<class TYPE>  klVector<TYPE> operator*(const klVector<TYPE> &v1, const klVector<TYPE> &v2)
 {
-	__int64 i;
+	__int64_t i;
 	if(v1.getColumns() != v2.getColumns() )
 	{ANSI_INFO; throw klError(err + "template<class TYPE> const klVector<TYPE> operator*(const klVector<TYPE> &v1, const klVector<TYPE> &v2) ERROR: bad size");}
 
@@ -895,7 +896,7 @@ template<class TYPE>  klVector<TYPE> operator*(const klVector<TYPE> &v1, const k
 
 template<class TYPE>  klVector<TYPE> operator/(const klVector<TYPE> &v1, const klVector<TYPE> &v2)
 {
-	__int64 i;
+	__int64_t i;
 	if(v1.getColumns() != v2.getColumns() )
 	{ANSI_INFO; throw klError(err + " template<class TYPE> const klVector<TYPE> operator/(const klVector<TYPE> &v1, const klVector<TYPE> &v2) ERROR: bad size");}
 
@@ -921,7 +922,7 @@ template<class TYPE>  klVector<TYPE> operator/(const klVector<TYPE> &v1, const k
 //  template<class TYPE> const klVector<TYPE> elem_mult(const klVector<TYPE> &v1, const klVector<TYPE> &v2, const klVector<TYPE> &v3, const klVector<TYPE> &v4);
 template<class TYPE>  klVector<TYPE> operator/(const klVector<TYPE> &v, const TYPE t)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -938,7 +939,7 @@ template<class TYPE>  klVector<TYPE> operator/(const klVector<TYPE> &v, const TY
 
 template<class TYPE>  klVector<TYPE> operator/(const TYPE t, const klVector<TYPE> &v)
 {
-	__int64 i;
+	__int64_t i;
 
 	klVector<TYPE> c(v.getColumns() );
 
@@ -976,7 +977,7 @@ template <class TYPE> inline klVector<TYPE> RE(klVector<complex<TYPE > >  vec)
 	//Real part of first eig
 	klVector<TYPE> L_re(vec.getColumns() );
 
-	__int64 j=0;
+	__int64_t j=0;
 	for(j=0;j<vec.getColumns();j++)
 	{
 		L_re[j]=vec[j].real();
@@ -989,7 +990,7 @@ template <class TYPE> inline klVector<TYPE> IM(klVector<complex<TYPE > >  vec)
 	//Real part of first eig
 	klVector<TYPE> L_im(vec.getColumns() );
 
-	__int64 j=0;
+	__int64_t j=0;
 	for(j=0;j<vec.getColumns();j++)
 	{
 		L_im[j]=vec[j].imag();
@@ -1007,71 +1008,71 @@ inline klVector<complex<double> >  klApplyLog( const klVector<complex<double> > 
 }
 
 //Some simple ref counted classes used in algorithm parameter design pattern
-
-class klRCInt :public klRefCount<klMutex>
-{
-public:
-	klRCInt(__int64 value) : intV(value)
-	{
-
-	}
-
-	__int64 getValue()
-	{
-		return intV;
-	}
-
-private:
-
-	__int64 intV;	
-};
-typedef klSmartPtr<klRCInt >  klIntPtr;
-
-class klRCDouble:public klRefCount<klMutex>
-{
-public: 
-
-	klRCDouble(double value) : doubleV(value)
-	{
-	}
-	double getValue()
-	{
-		return doubleV;
-	}
-private:
-	double doubleV;
-};
-typedef klSmartPtr<klRCDouble >  klDoublePtr;
-
-
-class klRCString:public klRefCount<klMutex>
-{
-public: 
-	klRCString(string value) : stringV(value)
-	{
-	}
-
-	std::string getValue()
-	{
-		return stringV;
-	}
-
-
-
-private:
-	std::string stringV;
-};
-typedef klSmartPtr<klRCString >  klStringPtr;
-
-
-//For convenience we have short name versions of the smart pointers
-
-typedef klSmartPtr<klVector<double> >  klDoubleVectorPtr;
-
-typedef klSmartPtr<klVector<complex<double> > >  klComplexDoubleVectorPtr;
-
-typedef klSmartPtr<klVector<complex<float> > >  klComplexFloatVectorPtr;
-
-typedef klSmartPtr<klVector<float> >  klFloatVectorPtr;
+//
+//class klRCInt :public klRefCount<klMutex>
+//{
+//public:
+//	klRCInt(__int64_t value) : intV(value)
+//	{
+//
+//	}
+//
+//	__int64_t getValue()
+//	{
+//		return intV;
+//	}
+//
+//private:
+//
+//	__int64_t intV;
+//};
+//typedef klSmartPtr<klRCInt >  klIntPtr;
+//
+//class klRCDouble:public klRefCount<klMutex>
+//{
+//public:
+//
+//	klRCDouble(double value) : doubleV(value)
+//	{
+//	}
+//	double getValue()
+//	{
+//		return doubleV;
+//	}
+//private:
+//	double doubleV;
+//};
+//typedef klSmartPtr<klRCDouble >  klDoublePtr;
+//
+//
+//class klRCString:public klRefCount<klMutex>
+//{
+//public:
+//	klRCString(string value) : stringV(value)
+//	{
+//	}
+//
+//	std::string getValue()
+//	{
+//		return stringV;
+//	}
+//
+//
+//
+//private:
+//	std::string stringV;
+//};
+//typedef klSmartPtr<klRCString >  klStringPtr;
+//
+//
+////For convenience we have short name versions of the smart pointers
+//
+//typedef klSmartPtr<klVector<double> >  klDoubleVectorPtr;
+//
+//typedef klSmartPtr<klVector<complex<double> > >  klComplexDoubleVectorPtr;
+//
+//typedef klSmartPtr<klVector<complex<float> > >  klComplexFloatVectorPtr;
+//
+//typedef klSmartPtr<klVector<float> >  klFloatVectorPtr;
 
 #endif __kl_vector__

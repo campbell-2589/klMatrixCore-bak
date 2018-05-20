@@ -8,12 +8,13 @@
 #include <string>
 #include <map>
 #include <ostream>
+#include <fstream>
 #include "kl_matrix.h"
 using namespace std;
 
-//   06-2014 under construction. 
+//bbcrevisit under major construction.
 
-typedef enum klAlgorithmParameterType { klIntType=1, klDoubleType=2, klStringType=3, klDoubleVectorType=4, klDoubleMatrixType=5};
+enum klAlgorithmParameterType { klIntType=1, klDoubleType=2, klStringType=3, klDoubleVectorType=4, klDoubleMatrixType=5};
 
 
 class klAlgorithmParameter
@@ -24,34 +25,34 @@ public:
 	{
 	}
 
-	klAlgorithmParameter(string name, __int64 intValue) : _name(name)
+	klAlgorithmParameter(string name, __int64_t intValue) : _name(name)
 	{
-		ip = new klRCInt(intValue);
-		_parameterType= klAlgorithmParameterType::klIntType;
+		ip = intValue;
+		_parameterType= klIntType;
 	}
 
 	klAlgorithmParameter(string name, double dValue) : _name(name)
 	{
-		dp = new klRCDouble(dValue);
-		_parameterType= klAlgorithmParameterType::klDoubleType;
+		dp = dValue;
+		_parameterType= klDoubleType;
 	}
 
 	klAlgorithmParameter(string name, string sValue) : _name(name)
 	{
-		sp = new klRCString(sValue);
-		_parameterType= klAlgorithmParameterType::klDoubleType;
+		sp = sValue;
+		_parameterType= klDoubleType;
 	}
 
 	klAlgorithmParameter(string name, klVector<double> kldv) : _name(name)
 	{
-		dvp=new klVector<double> (kldv);
-		_parameterType= klAlgorithmParameterType::klDoubleVectorType;
+		dvp=kldv;
+		_parameterType= klDoubleVectorType;
 	}
 
 	klAlgorithmParameter(string name, klMatrix<double> kldm) : _name(name)
 	{
-		dmp=new klMatrix<double> (kldm); 
-		_parameterType= klAlgorithmParameterType::klDoubleMatrixType;
+		dmp=kldm;
+		_parameterType= klDoubleMatrixType;
 	}
 	
 	void setDescription(string descrption)
@@ -59,48 +60,47 @@ public:
 		_description= descrption;
 	}
 
-
 	string getStringValue()
 	{
-		if( _parameterType != klAlgorithmParameterType::klStringType)
+		if( _parameterType != klStringType)
 			throw klError(_name + "is not a klAlgorithmParameterType::klStringType");
 		
-		string value = sp->getValue();
+		string value = sp;
 		return value;
 	}
 
 	double getDoubleValue()
 	{
-		if( _parameterType != klAlgorithmParameterType::klDoubleType)
+		if( _parameterType != klDoubleType)
 			throw klError(_name + "is not a klAlgorithmParameterType::klDoubleType");
-		double value =dp->getValue();
+		double value =dp;
 		return value;
 	}
 
-	__int64 getIntValue()
+	__int64_t getIntValue()
 	{
-		if( _parameterType != klAlgorithmParameterType::klIntType)
+		if( _parameterType != klIntType)
 			throw klError(_name + "is not a klAlgorithmParameterType::klIntType");
-		double value =ip->getValue();
+		double value =ip;
 		return value;
 	}
 
 	klVector<double> getDoubleVectorValue()
 	{
-		if( _parameterType != klAlgorithmParameterType::klDoubleVectorType)
+		if( _parameterType != klDoubleVectorType)
 			throw klError(_name + "is not a klAlgorithmParameterType::klDoubleVectorType");
 	
-		klVector<double> value =*dvp;
+		klVector<double> value =dvp;
 
 		return value;
 	}
 
 	klMatrix<double> getDoubleMatrixValue()
 	{
-		if( _parameterType != klAlgorithmParameterType::klDoubleMatrixType)
+		if( _parameterType != klDoubleMatrixType)
 			throw klError(_name + "is not a klAlgorithmParameterType::klDoubleMatrixType");
 
-		klMatrix<double> value =*dmp;
+		klMatrix<double> value =dmp;
 
 		return value;
 	}
@@ -124,7 +124,7 @@ public:
 	{
 		switch(this->getType())
 			{
-			case klAlgorithmParameterType::klDoubleMatrixType :
+			case klDoubleMatrixType :
 				{
 					str<<"klAlgorithmParameterType::klDoubleMatrixTypeStartToken"<<endl;
 					str<<this->getDoubleMatrixValue()<<endl;
@@ -132,28 +132,28 @@ public:
 					
 					break;
 				}
-			case klAlgorithmParameterType::klDoubleType :
+			case klDoubleType :
 				{					
 					str<<"klAlgorithmParameterType::klDoubleTypeStartToken"<<endl;
 					str<<this->getDoubleValue()<<endl;
 					str<<"klAlgorithmParameterType::klDoubleTypeEndToken"<<endl;
 					break;
 				}
-			case klAlgorithmParameterType::klDoubleVectorType :
+			case klDoubleVectorType :
 				{
 					str<<"klAlgorithmParameterType::klDoubleVectorTypeStartToken"<<endl;
 					str<<this->getDoubleVectorValue()<<endl;
 					str<<"klAlgorithmParameterType::klDoubleVectorTypeEndToken"<<endl;
 					break;
 				}
-			case klAlgorithmParameterType::klIntType :
+			case klIntType :
 				{
 					str<<"klAlgorithmParameterType::klIntTypeStartToken"<<endl;
 					str<<this->getIntValue()<<endl;
 					str<<"klAlgorithmParameterType::klIntTypeEndToken"<<endl;
 					break;
 				}
-			case klAlgorithmParameterType::klStringType :
+			case klStringType :
 				{
 					str<<"klAlgorithmParameterType::klStringTypeStartToken"<<endl;
 					str<<this->getStringValue()<<endl;
@@ -169,14 +169,14 @@ private:
 	string _description;
 	klAlgorithmParameterType _parameterType;
 	
-	klIntPtr ip;
-	klStringPtr sp;
-	klDoublePtr dp;
-	klDoubleVectorPtr dvp;
-	klDoubleMatrixPtr dmp;
+	int ip;
+	string sp;
+	double dp;
+	klVector<double> dvp;
+	klMatrix<double>  dmp;
 };
 
-typedef std::map<std::string, std::map<std::string, klAlgorithmParameter>>::iterator algorithmParameter_itertator;
+typedef std::map<std::string, std::map<std::string, klAlgorithmParameter> >::iterator algorithmParameter_itertator;
 
 //This class is derived from if necessary
 class klAlgorithmParameterContainer
@@ -187,7 +187,7 @@ public:
 	{
 	}
 
-	void addIntParameter(string name, __int64 value)
+	void addIntParameter(string name, __int64_t value)
 	{
 		klAlgorithmParameter parameter(name,value);		
 		parameterMap[name] = parameter;
@@ -233,7 +233,8 @@ public:
 			
 	void describeAlgorithmParameters(ostream& str)
 	{
-		for(auto iterator = parameterMap.begin(); iterator != parameterMap.end(); iterator++)
+
+		for(map<string,klAlgorithmParameter>::iterator iterator = parameterMap.begin(); iterator != parameterMap.end(); iterator++)
 		{
 			string key;
 			klAlgorithmParameter value;
@@ -242,36 +243,7 @@ public:
 			value = iterator->second;
 			str<<key<<"  : TYPE = "<<value.getType()<<" Description = "<<value.getDescription()<<endl;
 
-			//Moved to Algorithm Parameter 
-/*
-			switch(value.getType())
-			{
-			case klAlgorithmParameterType::klDoubleMatrixType :
-				{
-					str<<"   Parameter Vaule = "<<value.getDoubleMatrixValue()<<endl;
-					break;
-				}
-			case klAlgorithmParameterType::klDoubleType :
-				{					
-					str<<"   Parameter Vaule = "<<value.getDoubleValue()<<endl;
-					break;
-				}
-			case klAlgorithmParameterType::klDoubleVectorType :
-				{
-					str<<"   Parameter Vaule = "<<value.getDoubleVectorValue()<<endl;
-					break;
-				}
-			case klAlgorithmParameterType::klIntType :
-				{
-					str<<"   Parameter Vaule = "<<value.getIntValue()<<endl;
-					break;
-				}
-			case klAlgorithmParameterType::klStringType :
-				{
-					str<<"   Parameter Vaule = "<<value.getStringValue()<<endl;
-					break;
-				}
-			}*/			
+
 		}
 	}
 	
@@ -287,12 +259,12 @@ public:
 
 	void serialize(string fileName)
 	{		
-		ofstream fileostream(fileName.c_str() );
+		std::ofstream fileostream(fileName.c_str() );
 		serialize(fileostream);
 	}
 
 	//This is a very basic serializer.  It is not performant for large matrices.
-	void serialize(ostream& str)
+	void serialize(ostream & str)
 	{
 		time_t time_of_day;
 		struct tm *tm_buf;
@@ -310,14 +282,15 @@ public:
 		describeAlgorithm(ss);
 		str<<"klAlgorithmDescriptionStartToken"<<endl;
 		str<<ss.str()<<endl; 
+		typedef map<string,klAlgorithmParameter> algoMap;
 		
-		for(auto iterator = parameterMap.begin(); iterator != parameterMap.end(); iterator++)
+		for(algoMap::iterator i= parameterMap.begin(); i != parameterMap.end(); i++)
 		{
 			string key;
 			klAlgorithmParameter value;
 
-			key = iterator->first;
-			value = iterator->second;
+			key = i->first;
+			value = i->second;
 			
 			str<<"klAlgorithmParameterNameStartToken"<<endl<<key<<endl<<"klAlgorithmParameterNameEndToken"<<endl;
 			str<<"klAlgorithmParameterTypeStartToken"<<endl<<value.getType()<<endl<<"klAlgorithmParameterTypeEndToken"<<endl;

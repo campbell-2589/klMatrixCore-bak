@@ -73,7 +73,7 @@ public:
 		delete evalString;
 	}
 
-	void setDimension(__int64 n)
+	void setDimension(__int64_t n)
 	{
 		_n = n;
 	}
@@ -111,7 +111,7 @@ private:
 
 	ofstream& system_stream;
 	ofstream& stream;
-	__int64 _n;  //Dimension (or some measure of it) for the test problem
+	__int64_t _n;  //Dimension (or some measure of it) for the test problem
 
 	klAlgorithmParameterContainer _algorithmParamters; 
 
@@ -133,7 +133,7 @@ public:
 		delete FP_errStatus;
 	}
 
-	void runTest(void (*pf)(ofstream &, __int64 &))
+	void runTest(void (*pf)(ofstream &, __int64_t &))
 	{
 		try
 		{
@@ -197,7 +197,7 @@ public:
 
 	}
 
-	double  runBenchMark(double (*pf)(__int64 &))
+	double  runBenchMark(double (*pf)(__int64_t &))
 	{
 		try
 		{

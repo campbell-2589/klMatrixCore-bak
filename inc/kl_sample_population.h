@@ -11,7 +11,6 @@
 
 #include "kl_stat.h"
 
-//We only use a few for now per Dr. Stone
 double *omnibus_moments (double * x, int n);
 double *geary_test(double * x, int n);
 double *student_range(double * x, int n);
@@ -39,7 +38,7 @@ double *mod_maxlik_ratio (double * x, int n);
 double *coeff_variation(double * x, int n);
 double *kotz_families(double * x, int n);
 
-template<class TYPE> class klSamplePopulation : public klMatrix<TYPE>
+template<class TYPE> class klSamplePopulation : protected klMatrix<TYPE>
 {
 public:
 
@@ -176,28 +175,28 @@ public:
 
 		unsigned int i;
 
-		_mean=new TYPE[_col];
-		_variance=new TYPE[_col];
-		_skewness=new TYPE[_col];
-		_kurtosis=new TYPE[_col];
+		_mean=new TYPE[this->_col];
+		_variance=new TYPE[this->_col];
+		_skewness=new TYPE[this->_col];
+		_kurtosis=new TYPE[this->_col];
 
-		for(i=0;i<_col;i++)
+		for(i=0;i<this->_col;i++)
 		{
 			klVector<TYPE> variable;
-			if(_mgr)				
-				variable.setup(_row,_mgr);
+			if(this->_mgr)
+				variable.setup(this->_row, this->_mgr);
 			else
-				variable.setup(_row);
+				variable.setup(this->_row);
 			unsigned int k;
-			for(k=0;k<_row;k++)
-				variable[k]=(_vectors+k)->operator[](i);
+			for(k=0;k<this->_row;k++)
+				variable[k]=(this->_vectors+k)->operator[](i);
 
 
 			TYPE* data=variable.getMemory();
-			*(_mean+i)= KL_stat::mean(data,_row);
-			*(_variance+i)= KL_stat::variance(data,_row,*(_mean+i));
-			*(_skewness+i)= KL_stat::skewness(data,_row,*(_mean+i), *(_variance+i) ); 
-			*(_kurtosis+i)= KL_stat::kurtosis(data,_row,*(_mean+i), *(_variance+i) );
+			*(_mean+i)= KL_stat::mean(data,this->_row);
+			*(_variance+i)= KL_stat::variance(data,this->_row,*(_mean+i));
+			*(_skewness+i)= KL_stat::skewness(data,this->_row,*(_mean+i), *(_variance+i) );
+			*(_kurtosis+i)= KL_stat::kurtosis(data,this->_row,*(_mean+i), *(_variance+i) );
 
 		}
 		_statsCalculated=true;
@@ -214,15 +213,15 @@ public:
 		if(!_statsCalculated)
 			calcDescriptiveStats();
 		klMatrix<TYPE> covariance;
-		if(_mgr)
-			covariance.setup(_col,_col,_mgr);
+		if(this->_mgr)
+			covariance.setup(this->_col,this->_col,this->_mgr);
 		else 
-			covariance.setup(_col,_col,0);
+			covariance.setup(this->_col,this->_col,0);
 
 		unsigned int i;
 		unsigned int j;
-		for(i=0;i<_col;i++)
-			for(j=i;j<_col;j++)
+		for(i=0;i<this->_col;i++)
+			for(j=i;j<this->_col;j++)
 			{
 				if(i==j)
 					covariance[i][i]=*(_variance+i);
@@ -230,11 +229,11 @@ public:
 				{
 					unsigned int k;
 					TYPE temp=0;
-					for(k=0;k<_row;k++)
+					for(k=0;k<this->_row;k++)
 					{
-						temp+=( (_vectors+k)->operator[](i) - *(_mean+i) ) * ( (_vectors+k)->operator[](j) - *(_mean+j) );
+						temp+=( (this->_vectors+k)->operator[](i) - *(_mean+i) ) * ( (this->_vectors+k)->operator[](j) - *(_mean+j) );
 					}
-					temp/=(_row-1);//unbiased form of estimator
+					temp/=(this->_row-1);//unbiased form of estimator
 					covariance[i][j]=temp;
 					covariance[j][i]=temp;
 

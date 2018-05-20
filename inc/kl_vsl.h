@@ -1,11 +1,10 @@
 #ifndef __kl_vsl__
 #define __kl_vsl__
 
-
 #include "kl_vector.h"
 /*
 Using Complex Types in C/C++
-As described in the documentation for the Intel® Fortran Compiler XE, C/C++ does not directly implement the 
+As described in the documentation for the Intelï¿½ Fortran Compiler XE, C/C++ does not directly implement the 
 Fortran types COMPLEX(4) and COMPLEX(8). However, you can write equivalent structures. The type COMPLEX(4)
 consists of two 4-byte floating-point numbers. The first of them is the real-number component, and the 
 second one is the imaginary-number component. The type COMPLEX(8) is similar to COMPLEX(4) except that it
@@ -216,41 +215,5 @@ void klVSLTrunc(klVector<double>&  v,klVector<double>& ans);
 //vdRound		Rounding to nearest integer
 void klVSLRound(klVector<double>&  v,klVector<double>& ans);
 
-//vdFrac		Computation of the fractional part
-//Must be new : 1>src\kl_vsl.cpp(1383): error C3861: '
-
-
-////enum klVSLZTypes{
-////	klVSLAdd,
-////	klVSLSub,
-////	klVSLMul,
-////	klVSLMulByConj,
-////	klVSLConj,
-////	klVSLAbs,
-////	klVSLArg,
-////	klVSLDiv,
-////	klVSLSqrt,
-////	klVSLPow,
-////	klVSLPowx,
-////	klVSLExp,
-////	klVSLLn,
-////	klVSLLog10,
-////	klVSLCos,
-////	klVSLSin,
-////	klVSLTan,
-////	klVSLAcos,
-////	klVSLAsin,
-////	klVSLAtan,
-////	klVSLCosh,
-////	klVSLSinh,
-////	klVSLTanh,
-////	klVSLAcosh,
-////	klVSLAsinh,
-////	klVSLAtanh	};
-
-//
-////vdFrac		Computation of the fractional part
-////Must be new : 1>src\kl_vsl.cpp(1383): error C3861: 'vdFrac': identifier not found
-////klVector<double > klVSLFract(klVector<double  > v,bool inplace);
 
 #endif

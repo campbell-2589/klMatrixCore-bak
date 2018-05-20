@@ -11,29 +11,29 @@ template<class TYPE> class klSVD
 {
 private :
 	bool _resultsCalculated;
-	klSmartPtr<klMatrix<TYPE> > _A;
-	klSmartPtr<klMatrix<TYPE> > _U;
-	klSmartPtr<klMatrix<TYPE> > _V;
-	klSmartPtr<klVector<TYPE> > _Sigma;
+	klMatrix<TYPE>  _A;
+	klMatrix<TYPE>  _U;
+	klMatrix<TYPE>  _V;
+	klVector<TYPE>  _Sigma;
 
 public:	
 	klSVD(klMatrix<TYPE>& A) : _resultsCalculated(false)
 	{
-		_A = new klMatrix<TYPE>(A);
+		_A = klMatrix<TYPE>(A);
 	}
 
-	klSmartPtr<klVector<TYPE> > operator()()
+	klVector<TYPE>  operator()()
 	{
-		return new klVector<TYPE>(0,0);
+		return klVector<TYPE>(0,0);
 	}
 
-	klSmartPtr<klMatrix<TYPE> > U()
+	klMatrix<TYPE>  U()
 	{
 		if(_resultsCalculated==true)
 			return _U;
 	}
 
-	klSmartPtr<klMatrix<TYPE> > V()
+	klMatrix<TYPE> V()
 	{	
 		if(_resultsCalculated==true)
 			return _V;
@@ -41,7 +41,7 @@ public:
 
 };
 
-template<> klSmartPtr<klVector<float> > klSVD<float>::operator()()
+template<> klVector<float>  klSVD<float>::operator()()
 {
 	//Note that the routine returns vt = V' (for real flavors) or vt = conjg(V') (for complex flavors), not V.
 
@@ -50,22 +50,22 @@ template<> klSmartPtr<klVector<float> > klSVD<float>::operator()()
 		//if m ?  n, the first n columns of U are overwritten in the array a and all rows of V'/conjg(V') are returned in the array vt; 
 		//if m < n, all columns of U are returned in the array u and the first m rows of V'/conjg(V') are overwritten in the array a;
 	char jobz='A';
-	int m=_A->getRows();
-	int n=_A->getColumns();
+	int m=_A.getRows();
+	int n=_A.getColumns();
 
 	//If jobz = 'O', then if m? n, a is overwritten with the first n columns of U 
 	//(the left singular vectors, stored columnwise). 
 	//If m < n, a is overwritten with the first m rows of VT (the right singular vectors, stored rowwise);
 	//If jobz?'O', the contents of a are destroyed.
 	
-	float* a = _A->transpose().getMemory();  //BBC revisit we need to pass in transpose!
+	float* a = _A.transpose().getMemory();  //BBC revisit we need to pass in transpose!
 
-	int lda= _A->getRows();
+	int lda= _A.getRows();
 
-	_U = new klMatrix<float>(m,m);
-	_V = new  klMatrix<float>(n,n);
-	_Sigma = new  klVector<float>(min(m,n));
-	float* s=_Sigma->getMemory();
+	_U = klMatrix<float>(m,m);
+	_V =  klMatrix<float>(n,n);
+	_Sigma = klVector<float>(min(m,n));
+	float* s=_Sigma.getMemory();
 
 	//u(ldu,*); the second dimension of u must be at least max(1, m)if jobz = 'A' or jobz = 'O' and m < n. 
 	//If jobz = 'A'or jobz = 'O' and m < n, u contains the m-by-m orthogonal/unitary matrix U.
@@ -73,8 +73,8 @@ template<> klSmartPtr<klVector<float> > klSVD<float>::operator()()
 	//vt(ldvt,*); the second dimension of vt must be at least max(1, n).
 	//If jobz = 'O' and m < n, or jobz = 'N', vt is not referenced.
 
-	float* u=_U->getMemory();
-	float* vt=_V->getMemory();
+	float* u=_U.getMemory();
+	float* vt=_V.getMemory();
 
 
 	int ldu = m;
@@ -93,24 +93,21 @@ template<> klSmartPtr<klVector<float> > klSVD<float>::operator()()
 	return _Sigma;
 }
 
-template<> klSmartPtr<klVector<double> > klSVD<double>::operator()()
+template<> klVector<double> klSVD<double>::operator()()
 {
 	char jobz='A';
-	int m=_A->getRows();
-	int n=_A->getColumns();
-	double* a = _A->getMemory();
-	int lda= _A->getRows();
+	int m=_A.getRows();
+	int n=_A.getColumns();
+	double* a = _A.getMemory();
+	int lda= _A.getRows();
 
-	_U = new klMatrix<double>(m,m);
-	_V =new  klMatrix<double>(n,n);
+	_U =  klMatrix<double>(m,m);
+	_V =  klMatrix<double>(n,n);
 
-	//_Sigma =Array, DIMENSION at least max(1, min(m,n)). 
-	//Contains the singular values of A sorted so that s(i) ? s(i+1).
-
-	_Sigma = new  klVector<double>(min(m,n));
-	double* s=_Sigma->getMemory();
-	double* u=_U->getMemory();
-	double* vt=_V->getMemory();
+	_Sigma = klVector<double>(min(m,n));
+	double* s=_Sigma.getMemory();
+	double* u=_U.getMemory();
+	double* vt=_V.getMemory();
 	int ldu = m;
 	int ldvt = n;
 	int minv=(m<n? m :n);
@@ -125,21 +122,20 @@ template<> klSmartPtr<klVector<double> > klSVD<double>::operator()()
 
 	_resultsCalculated = true;
 	return _Sigma;
-
 }
 
 template<class TYPE> class klLU
 {
 private :
 	bool _resultsCalculated;
-	klSmartPtr<klMatrix<TYPE> > _A;
+	klMatrix<TYPE>  _A;
 	klMatrix<TYPE>  _U;
 	klMatrix<TYPE>  _L;
 
 public:	
 	klLU(klMatrix<TYPE>& A) : _resultsCalculated(false)
 	{
-		_A = new klMatrix<TYPE>(A);
+		_A = klMatrix<TYPE>(A);
 	}
 
 	klMatrix<TYPE>  operator()()
@@ -166,13 +162,13 @@ public:
 template<> klMatrix<double> klLU<double>::operator()()
 {
 	//transpose to get into FORTRAN column major storage format
-	klMatrix<double> tr=_A->transpose();
+	klMatrix<double> tr=_A.transpose();
 	//allocate memory for returned pivot indices
-	size_t size=_A->getRows()  >_A->getColumns() ? _A->getRows() : _A->getColumns();
+	size_t size=_A.getRows()  >_A.getColumns() ? _A.getRows() : _A.getColumns();
 	int* ipiv=new int[2*size];
 	int info=0;
-	int n=_A->getRows();
-	int m=_A->getColumns();
+	int n=_A.getRows();
+	int m=_A.getColumns();
 	dgetrf(&n,&m,tr.getMemory(),&n,ipiv,&info);
 	//tr is now LU factored
 	 
@@ -192,9 +188,9 @@ template<class TYPE> class klSYEVX
 {
 private :
 	bool _resultsCalculated;
-	klSmartPtr<klMatrix<TYPE> > _A;
-	klSmartPtr<klMatrix<TYPE> > _B;
-	klSmartPtr<klVector<TYPE> > _Sigma;
+	klMatrix<TYPE>  _A;
+	klMatrix<TYPE>  _B;
+	klVector<TYPE>  _Sigma;
 
 public:	
 	klSYEVX(klMatrix<TYPE>& A) : _resultsCalculated(false)
@@ -203,10 +199,10 @@ public:
 		{
 			throw klError("klSYEVX(klMatrix<TYPE>& A,unsigned int numEigen) bad dimension.  Matrix must be square");
 		}
-		_A = new klMatrix<TYPE>(A);
+		_A = klMatrix<TYPE>(A);
 	}
 
-	klSmartPtr<klMatrix<TYPE> > Eigenvectors()
+	klMatrix<TYPE>  Eigenvectors()
 	{
 		if (_resultsCalculated)
 		{
@@ -220,33 +216,33 @@ public:
 
 	}
 
-	klSmartPtr<klVector<TYPE> > operator()()
+	klVector<TYPE>  operator()()
 	{
 		return new klVector<TYPE>(0,0);
 	}
 };
 
 #include "mkl_lapacke.h"
-template<> klSmartPtr<klVector<double> > klSYEVX<double>::operator()()
+template<> klVector<double>  klSYEVX<double>::operator()()
 {
 	int info;
 
-	int m=_A->getRows();
+	int m=_A.getRows();
 
-	int n=_A->getColumns();
+	int n=_A.getColumns();
 
     //Make a deep copy of _A.  The call will replace the matrix with the basis of eigenvectors
-	_B= new klMatrix<double>(*(_A.ptr() )) ;
+	_B= klMatrix<double>(_A) ;
 
-	double* a = _A->getMemory();
+	double* a = _A.getMemory();
 
-	double* b = _B->getMemory();
+	double* b = _B.getMemory();
 
-	int lda= _A->getRows();
+	int lda= _A.getRows();
 
-	_Sigma = new  klVector<double>(n);
+	_Sigma = klVector<double>(n);
 
-	double* s=_Sigma->getMemory();
+	double* s=_Sigma.getMemory();
 
 	info = LAPACKE_dsyev( LAPACK_ROW_MAJOR, 'V', 'U', n, b, lda, s );
 
@@ -256,7 +252,7 @@ template<> klSmartPtr<klVector<double> > klSYEVX<double>::operator()()
 }
 
 //This computes all eigenvalues and, optionally, eigenvectors of an n-by-n real symmetric matrix A
-//Intel® MKL 11.0 Update 2 introduced a new component called Extended Eigensolver routines. 
+//Intel MKL 11.0 Update 2 introduced a new component called Extended Eigensolver routines.
 //These routines solve standard and generalized Eigenvalue problems for symmetric/Hermitian and symmetric/Hermitian positive definite sparse matrices. Specifically, these routines computes all the Eigenvalues and the corresponding Eigenvectors within a given search interval [?min, ?max]:
 //$$Ax = ?x$$ and
 //$$Ax = ?Bx$$
@@ -267,10 +263,10 @@ template<class TYPE> class klFEATS
 private :
 
 	bool _resultsCalculated;
-	klSmartPtr<klMatrix<TYPE> > _A;
+	klMatrix<TYPE>  _A;
 	unsigned int _numEigen;
-	klSmartPtr<klMatrix<TYPE> > _B;
-	klSmartPtr<klVector<TYPE> > _Sigma;
+	klMatrix<TYPE> _B;
+	klVector<TYPE> _Sigma;
 
 public:	
 	klFEATS(klMatrix<TYPE>& A,unsigned int numEigen) : _resultsCalculated(false)
@@ -282,7 +278,7 @@ public:
 		_A = new klMatrix<TYPE>(A);
 	}
 
-	klSmartPtr<klMatrix<TYPE> > Eigenvectors()
+	klMatrix<TYPE>  Eigenvectors()
 	{
 		if (_resultsCalculated)
 		{
@@ -295,23 +291,23 @@ public:
 		}
 	}
 
-	klSmartPtr<klVector<TYPE> > operator()()
+	klVector<TYPE> operator()()
 	{
 		return new klVector<TYPE>(0,0);
 	}
 };
 
 #include "mkl_lapacke.h"
-template<> klSmartPtr<klVector<double> > klFEATS<double>::operator()()
+template<> klVector<double>  klFEATS<double>::operator()()
 {
-	int n=_A->getColumns();
+	int n=_A.getColumns();
 
     //Make a deep copy of _A.  The call will replace the matrix with the basis of eigenvectors
-	_B= new klMatrix<double>(*(_A.ptr() )) ;
+	_B=klMatrix<double>(_A) ;
 
-	double* a = _A->getMemory();
+	double* a = _A.getMemory();
 
-	int lda= _A->getRows();
+	int lda= _A.getRows();
 
 	//Must be 'U' or 'L' or 'F' .If uplo = 'U', a stores the upper triangular parts of A. If uplo = 'L', a stores the lower triangular parts of A. If uplo= 'F' , a stores the full matrix A.
 	const char uplo = 'F';
@@ -338,6 +334,8 @@ template<> klSmartPtr<klVector<double> > klFEATS<double>::operator()()
 
 	int info;
 	//const char * uplo, const MKL_INT * n, const double * a, const MKL_INT * lda, MKL_INT * fpm, double * epsout, MKL_INT * loop, const double * emin, const double * emax, MKL_INT * m0, double * e, double * x, MKL_INT * m, double * res, MKL_INT * info
+
+	//bbctodo
 	//dfeast_syev ( &uplo, &n, a, &lda, fpm, & epsout, &loop,&emin, & emax, & m0,  e,  x,  &m, res, &info);
 	
 	_resultsCalculated = true;

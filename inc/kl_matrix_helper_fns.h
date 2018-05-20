@@ -15,13 +15,13 @@
 
 //Let A \in G_1(n,n) =X : X_{ii} =_d N(0,1) X_{ij} =_d N(0,frac{1}{2}
 //frac{A+A^dag} {2} \in GOE 
-klMatrix<double> SampleGOE( __int64 n , unsigned  seed= 4357 );
+klMatrix<double> SampleGOE( __int64_t n , unsigned  seed= 4357 );
 
 //\beta = 1 flavor - This function samples from the space of covariance matrices for
 //the multivariate normal distributuion
-klMatrix<double> SampleWishart( __int64 n , unsigned  seed= 4357 );
+klMatrix<double> SampleWishart( __int64_t n , unsigned  seed= 4357 );
 
-klMatrix<double> SampleSymmetricStandardNormalRM( __int64 n , unsigned  seed = 4357);
+klMatrix<double> SampleSymmetricStandardNormalRM( __int64_t n , unsigned  seed = 4357);
 
 //Generate a random permutation of integer types over specified range.
 template<class TYPE> klVector<TYPE> kl_random_permutation( unsigned  range, unsigned  seed= 4357 )
@@ -53,7 +53,7 @@ template<class TYPE> klVector<TYPE> kl_random_permutation( unsigned  range, unsi
 }
 
 //Returns an identity matrix
-template<class TYPE> klMatrix<TYPE> IdentityMatrix(__int64 n)
+template<class TYPE> klMatrix<TYPE> IdentityMatrix(__int64_t n)
 {
 	klMatrix<TYPE> Id(n,n);
 	unsigned int i=0;
@@ -71,11 +71,11 @@ template<class TYPE> klMatrix<TYPE> IdentityMatrix(__int64 n)
 }
 
 
-inline klMatrix<double> HilbertMatrix(__int64 n)
+inline klMatrix<double> HilbertMatrix(__int64_t n)
 {
 	klMatrix<double> H(n,n);
-	for(__int64 i=1;i<=n;i++)
-		for(__int64 j=1;j<=n;j++)
+	for(__int64_t i=1;i<=n;i++)
+		for(__int64_t j=1;j<=n;j++)
 			H[i-1][j-1]= 1.0 / (i +j-1) ;
 	return H;
 }

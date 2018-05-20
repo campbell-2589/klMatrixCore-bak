@@ -7,7 +7,7 @@
 
 #include "kl_matrix.h"
 
-template<class TYPE> void MatrixOpsQuickCheck(ofstream &_tex,__int64& n)
+template<class TYPE> void MatrixOpsQuickCheck(ofstream &_tex,__int64_t& n)
 {	
 	klMatrix<double> X(4,3);
 	klVector<double> valsRowWise(4);
@@ -305,7 +305,7 @@ template<class TYPE> void MatrixOpsQuickCheck(ofstream &_tex,__int64& n)
 }
 
 #include "kl_random_number_generator.h"
-template<class type> void testKLDescriptiveStatistics(ofstream &FS1,__int64 &n)
+template<class type> void testKLDescriptiveStatistics(ofstream &FS1,__int64_t &n)
 {
 	char* arg=new char[1024];
 	
@@ -348,7 +348,7 @@ template<class type> void testKLDescriptiveStatistics(ofstream &FS1,__int64 &n)
 
 #include "kl_time_series.h"
 #include "kl_random_number_generator.h"
-template<class TYPE> void testKLTimeSeries2(ofstream &_tex,__int64 &n)
+template<class TYPE> void testKLTimeSeries2(ofstream &_tex,__int64_t &n)
 {
 	size_t popsize=1024*2;
 	klVector<TYPE> a(popsize);
@@ -435,7 +435,7 @@ template<class TYPE> void testSamplePopulation2(ofstream &_tex)//const char* fil
 
 	/*  Recipe for SPD
 	The diagonal entries of the matrix have the form (0.5 + rand)*dim; 
-	the lower-diagonal entries take the form rand — 0.5; 
+	the lower-diagonal entries take the form rand ï¿½ 0.5; 
 	the upper-diagonal entries equal their lower-diagonal counterparts.
 	Here, dim is the number of equations and rand a random-number generator with values in the interval [0, 1].
 	This construction yields a symmetric and positive definite matrix.
@@ -521,7 +521,7 @@ template<class TYPE> void klMulticlassSVMHarness2(ofstream &_tex)
 	_tex<<"\\end{tabular}\\biggr]$\\newline"<<endl;
 
 	_tex<<"Verify L1 condition number of covariance. The diagonal entries of the matrix have the form $(0.5 + U(0,1) )*dim(Dom(Cov))$"<<endl; 
-	_tex<<"The lower-diagonal entries take the form $U(0,1) — 0.5$. "<<endl;
+	_tex<<"The lower-diagonal entries take the form $U(0,1) ï¿½ 0.5$. "<<endl;
 	_tex<<"The $L_1$ condition numbers are :"<<endl;
 	_tex<<"\\begin{itemize}"<<endl; 
 	_tex<<"\\item "<<covarianceMatrix1.ConditionNumber(true)<<endl;
@@ -877,7 +877,7 @@ template<class TYPE> void klMulticlassSVMHarness2(ofstream &_tex)
 
 #include "kl_multivariate_random_variable.h"
 #include "kl_sample_population.h"
-template<class TYPE> void testKLMultiVariateRandomNumberGenerator2(ofstream &_tex,__int64  &n)//const char* fileName)
+template<class TYPE> void testKLMultiVariateRandomNumberGenerator2(ofstream &_tex,__int64_t  &n)//const char* fileName)
 {
 
 	//ios_base::openmode wMode = ios_base::app;
@@ -1083,7 +1083,7 @@ template<class TYPE> void testKLMultiVariateRandomNumberGenerator2(ofstream &_te
 
 	/*  Recipe for SPD
 	The diagonal entries of the matrix have the form (0.5 + rand)*dim; 
-	the lower-diagonal entries take the form rand — 0.5; 
+	the lower-diagonal entries take the form rand ï¿½ 0.5; 
 	the upper-diagonal entries equal their lower-diagonal counterparts.
 	Here, dim is the number of equations and rand a random-number generator with values in the interval [0, 1].
 	This construction yields a symmetric and positive definite matrix.
@@ -1296,7 +1296,7 @@ template<class TYPE> void klRVUnitTestHarnessLaTex2(klRV<TYPE> ** RV,unsigned in
 }
 
 #include "kl_memory.h"
-inline void  MemoryManagement(ofstream &_tex,__int64  &n)
+inline void  MemoryManagement(ofstream &_tex,__int64_t  &n)
 {
 	int reserve = 1024*1024*64;
 
@@ -1446,7 +1446,6 @@ template<class TYPE>  void __cdecl testKLRandomNumberGeneratorL(const char* file
 	//Generates a sample for each, writes histogram image, and data file in the ouput directory.
 	//klRVUnitTestHarnessLaTex<TYPE>(pRV,12,names);
 	//klRVUnitTestHarness<TYPE>(pRV,12,names);
-
 
 	delete pRV;
 

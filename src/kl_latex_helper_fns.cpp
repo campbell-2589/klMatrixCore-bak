@@ -3,7 +3,6 @@
  * Bruce B Campbell 07 08 2014  *
  ********************************/
 #include "kl_latex_helper_fns.h"
-#include "kl_matlab_iface.h"
 
 void startLatexDoc(string title,string author,string date,ofstream &_tex,string abs)
 {
@@ -86,205 +85,205 @@ void endLatexDoc(ofstream &_tex)
 {
 	_tex<<"\\end{document}"<<endl;
 }
+//
+//void LatexInsert3DPlot(klMatrix<double>& mat, ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
+//
+//	const char* xAxis=NULL;
+//	const char* yAxis=NULL;
+//	const char* zAxis=NULL;
+//	bool useExtents=true;
+//
+//	klScatterPlot3D(mat,filename.c_str(),title.c_str(), xAxis, yAxis,zAxis, useExtents, holdon, markerType);
+//
+//	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
+//	{
+//		sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//		engEvalString(matlabEngine, evalString);
+//
+//		engEvalString(matlabEngine, "hold off;close(gcf);");
+//
+//		sprintf(evalString,"epstopdf   %s",arg);
+//
+//		system(evalString);
+//		sprintf(arg,"%s.pdf",filename.c_str());
+//		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//	}
+//	delete arg;
+//	delete evalString;
+//}
+//
+//void LatexInsert1DPlot(klVector<double>& vec, ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
+//
+//	const char* xAxis=NULL;
+//	const char* yAxis=NULL;
+//	bool useExtents=true;
+//	unsigned int start=0;
+//	unsigned int finish=0;
+//
+//	klPlot1D<double>(vec,arg,title.c_str(),xAxis,yAxis,useExtents,start,finish,holdon,markerType);
+//
+//	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
+//	{
+//		sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//		engEvalString(matlabEngine, evalString);
+//		engEvalString(matlabEngine, "hold off;close(gcf);");
+//		sprintf(evalString,"epstopdf   %s",arg);
+//		system(evalString);
+//		sprintf(arg,"%s.pdf",filename.c_str());
+//		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//	}
+//
+//	delete arg;
+//	delete evalString;
+//}
+//
+//void LatexInsert2DScatterPlot( klVector<double>& vecX,klVector<double>& vecY ,ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//
+//	const char* xAxis=vecX.desc.c_str();
+//	const char* yAxis=vecY.desc.c_str();
+//
+//	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
+//
+//
+//	bool useExtents=true;
+//	unsigned int start=0;
+//	unsigned int finish=0;
+//
+//	klScatterPlot2D<double>(vecX,vecY,arg,title.c_str(),xAxis,yAxis,useExtents,holdon,markerType);
+//
+//	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
+//	{
+//		sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//		engEvalString(matlabEngine, evalString);
+//		engEvalString(matlabEngine, "hold off;close(gcf);");
+//		sprintf(evalString,"epstopdf   %s",arg);
+//		system(evalString);
+//		sprintf(arg,"%s.pdf",filename.c_str());
+//		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//	}
+//
+//	delete arg;
+//	delete evalString;
+//}
+//
+//void LatexInsertHeatMap(klMatrix<double>& mat, ofstream &_tex, string dir,string filename,string title)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
+//	//klMatrix<TYPE>  c,const char* filename,  const char* title=NULL,const char* xAxis=NULL,const char* yAxis=NULL,const char* zAxis=NULL,bool useExtents=true,bool holdOn=false,const char* marker=NULL
+//	klHeatMapPlot<double>(mat,arg,title.c_str());
+//	sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//	engEvalString(matlabEngine, evalString);
+//	engEvalString(matlabEngine, "hold off;close(gcf);");
+//	sprintf(evalString,"epstopdf   %s",arg);
+//	system(evalString);
+//	sprintf(arg,"%s.pdf",filename.c_str());
+//	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//	delete arg;
+//	delete evalString;
+//}
+//void LatexInsertHistogram(klVector<double>& vec, unsigned int numBins,ofstream &_tex, string dir,string filename,string title)
+//{
+//	/*vec.setupRange();
+//	klVector<double> hist=vec.histogram(numBins,vec.y0,vec.y1);
+//	hist.setupRange();
+//	hist.setupDomain(vec.y0,vec.y1);*/
+//
+//	klMatlabEngineThreadMap klmtm;
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//	sprintf(arg,"%s\\%s.eps",dir.c_str(),filename.c_str());
+//
+//	//klPlot1D<double>(hist,arg,title.c_str());
+//
+//	klPlotHistogram<double>(vec,arg,title.c_str());
+//
+//	sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//	engEvalString(matlabEngine, evalString);
+//	engEvalString(matlabEngine, "hold off;close(gcf);");
+//	sprintf(evalString,"epstopdf   %s",arg);
+//	system(evalString);
+//	sprintf(arg,"%s.pdf",filename.c_str());
+//	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//	delete arg;
+//	delete evalString;
+//}
 
-void LatexInsert3DPlot(klMatrix<double>& mat, ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
-{
-	klMatlabEngineThreadMap klmtm;
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
-
-	const char* xAxis=NULL;
-	const char* yAxis=NULL;
-	const char* zAxis=NULL;
-	bool useExtents=true;
-	
-	klScatterPlot3D(mat,filename.c_str(),title.c_str(), xAxis, yAxis,zAxis, useExtents, holdon, markerType);
-
-	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
-	{
-		sprintf(evalString,"print -r1200 -depsc %s;",arg);
-		engEvalString(matlabEngine, evalString);
-
-		engEvalString(matlabEngine, "hold off;close(gcf);");
-
-		sprintf(evalString,"epstopdf   %s",arg);
-
-		system(evalString);
-		sprintf(arg,"%s.pdf",filename.c_str());
-		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	}
-	delete arg;
-	delete evalString;
-}
-
-void LatexInsert1DPlot(klVector<double>& vec, ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
-{
-	klMatlabEngineThreadMap klmtm;
-
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
-	
-	const char* xAxis=NULL;
-	const char* yAxis=NULL;
-	bool useExtents=true;
-	unsigned int start=0;
-	unsigned int finish=0;
-		
-	klPlot1D<double>(vec,arg,title.c_str(),xAxis,yAxis,useExtents,start,finish,holdon,markerType);
-
-	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
-	{	
-		sprintf(evalString,"print -r1200 -depsc %s;",arg);
-		engEvalString(matlabEngine, evalString);
-		engEvalString(matlabEngine, "hold off;close(gcf);");
-		sprintf(evalString,"epstopdf   %s",arg);
-		system(evalString);
-		sprintf(arg,"%s.pdf",filename.c_str());
-		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	}
-
-	delete arg;
-	delete evalString;
-}
-
-void LatexInsert2DScatterPlot( klVector<double>& vecX,klVector<double>& vecY ,ofstream &_tex, string dir,string filename,string title,klHoldOnStatus holdon,const char* markerType)
-{
-	klMatlabEngineThreadMap klmtm;
-
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-
-	const char* xAxis=vecX.desc.c_str();
-	const char* yAxis=vecY.desc.c_str();
-
-	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
-	
-
-	bool useExtents=true;
-	unsigned int start=0;
-	unsigned int finish=0;
-		
-	klScatterPlot2D<double>(vecX,vecY,arg,title.c_str(),xAxis,yAxis,useExtents,holdon,markerType);
-	
-	if(holdon==klHoldOnStatus::LastPlot  || holdon==klHoldOnStatus::NoHold )
-	{	
-		sprintf(evalString,"print -r1200 -depsc %s;",arg);
-		engEvalString(matlabEngine, evalString);
-		engEvalString(matlabEngine, "hold off;close(gcf);");
-		sprintf(evalString,"epstopdf   %s",arg);
-		system(evalString);
-		sprintf(arg,"%s.pdf",filename.c_str());
-		_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	}
-	
-	delete arg;
-	delete evalString;
-}
-
-void LatexInsertHeatMap(klMatrix<double>& mat, ofstream &_tex, string dir,string filename,string title)
-{
-	klMatlabEngineThreadMap klmtm;
-
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-	sprintf(arg,"%s//%s.eps",dir.c_str(),filename.c_str());
-	//klMatrix<TYPE>  c,const char* filename,  const char* title=NULL,const char* xAxis=NULL,const char* yAxis=NULL,const char* zAxis=NULL,bool useExtents=true,bool holdOn=false,const char* marker=NULL
-	klHeatMapPlot<double>(mat,arg,title.c_str());
-	sprintf(evalString,"print -r1200 -depsc %s;",arg);
-	engEvalString(matlabEngine, evalString);
-	engEvalString(matlabEngine, "hold off;close(gcf);");
-	sprintf(evalString,"epstopdf   %s",arg);
-	system(evalString);
-	sprintf(arg,"%s.pdf",filename.c_str());
-	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	delete arg;
-	delete evalString;
-}
-void LatexInsertHistogram(klVector<double>& vec, unsigned int numBins,ofstream &_tex, string dir,string filename,string title)
-{
-	/*vec.setupRange();
-	klVector<double> hist=vec.histogram(numBins,vec.y0,vec.y1);
-	hist.setupRange();
-	hist.setupDomain(vec.y0,vec.y1);*/
-
-	klMatlabEngineThreadMap klmtm;
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-	sprintf(arg,"%s\\%s.eps",dir.c_str(),filename.c_str());
-	
-	//klPlot1D<double>(hist,arg,title.c_str());
-
-	klPlotHistogram<double>(vec,arg,title.c_str());
-		
-	sprintf(evalString,"print -r1200 -depsc %s;",arg);
-	engEvalString(matlabEngine, evalString);
-	engEvalString(matlabEngine, "hold off;close(gcf);");
-	sprintf(evalString,"epstopdf   %s",arg);
-	system(evalString);
-	sprintf(arg,"%s.pdf",filename.c_str());
-	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	delete arg;
-	delete evalString;
-}
-
-void LatexInsertLegend(string legend)
-{
-	klMatlabEngineThreadMap klmtm;
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-	stringstream evalString;
-	evalString<<"legend("<<legend<<");";
-	engEvalString(matlabEngine, evalString.str().c_str());
-	
-}
-void WritePlot(ofstream &_tex, string dir,string filename,char* title,char* xAxis,char* yAxis)
-{
-	klMatlabEngineThreadMap klmtm;
-
-	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
-
-	char* arg = new char[2048];
-	char* evalString = new char[2048];
-
-	if(title!=NULL)
-		{
-			sprintf(evalString,"title('%s');",title);//title({'This title','has 2 lines'}) % 
-			engEvalString(matlabEngine, evalString);
-		}	
-
-		if(xAxis!=NULL)
-		{
-			sprintf(evalString,"xlabel('%s');",xAxis);
-			engEvalString(matlabEngine, evalString);
-		}
-		if(yAxis!=NULL)
-		{
-			sprintf(evalString,"ylabel('%s');",yAxis);
-			engEvalString(matlabEngine, evalString);
-		}
-
-	sprintf(arg,"%s%s.eps",dir.c_str(),filename.c_str());
-	sprintf(evalString,"saveas(gcf,'%s');",arg);
-	engEvalString(matlabEngine, evalString);
-	
-	sprintf(evalString,"print -r1200 -depsc %s;",arg);
-	engEvalString(matlabEngine, evalString);
-	engEvalString(matlabEngine, "hold off;close(gcf);");
-	sprintf(evalString,"epstopdf   %s",arg);
-	system(evalString);
-	sprintf(arg,"%s.pdf",filename.c_str());
-	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
-	
-
-	delete arg;
-	delete evalString;
-}
+//void LatexInsertLegend(string legend)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//	stringstream evalString;
+//	evalString<<"legend("<<legend<<");";
+//	engEvalString(matlabEngine, evalString.str().c_str());
+//
+//}
+//void WritePlot(ofstream &_tex, string dir,string filename,char* title,char* xAxis,char* yAxis)
+//{
+//	klMatlabEngineThreadMap klmtm;
+//
+//	Engine* matlabEngine=klmtm.find(klThread<klMutex>::getCurrentThreadId() );
+//
+//	char* arg = new char[2048];
+//	char* evalString = new char[2048];
+//
+//	if(title!=NULL)
+//		{
+//			sprintf(evalString,"title('%s');",title);//title({'This title','has 2 lines'}) %
+//			engEvalString(matlabEngine, evalString);
+//		}
+//
+//		if(xAxis!=NULL)
+//		{
+//			sprintf(evalString,"xlabel('%s');",xAxis);
+//			engEvalString(matlabEngine, evalString);
+//		}
+//		if(yAxis!=NULL)
+//		{
+//			sprintf(evalString,"ylabel('%s');",yAxis);
+//			engEvalString(matlabEngine, evalString);
+//		}
+//
+//	sprintf(arg,"%s%s.eps",dir.c_str(),filename.c_str());
+//	sprintf(evalString,"saveas(gcf,'%s');",arg);
+//	engEvalString(matlabEngine, evalString);
+//
+//	sprintf(evalString,"print -r1200 -depsc %s;",arg);
+//	engEvalString(matlabEngine, evalString);
+//	engEvalString(matlabEngine, "hold off;close(gcf);");
+//	sprintf(evalString,"epstopdf   %s",arg);
+//	system(evalString);
+//	sprintf(arg,"%s.pdf",filename.c_str());
+//	_tex<<"\\includegraphics[width=10.0cm,height=10.0cm]{"<<arg<<"}"<<endl<<endl;
+//
+//
+//	delete arg;
+//	delete evalString;
+//}

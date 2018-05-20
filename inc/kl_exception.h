@@ -5,7 +5,6 @@
 #ifndef __kl_exception__
 #define __kl_exception__
 
-#include "kl_stack_walker.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,7 +14,7 @@ using namespace std;
 class klError : public  exception
 {
 public:
-	klError(std::string msg) : exception( (msg+ klStackWalkFn()).c_str() ) 
+	klError(std::string msg) : std::exception()
 	{
 	
 	}
