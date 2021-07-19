@@ -1,3 +1,5 @@
+https://img.shields.io/github/directory-file-count/brucebcampbell/klMatrixCore?style=plastic
+
 This repository contains a high performance analytics framework based on Intel MKL. Use the solutions in the wavescholar ProjectFiles repository to build the libraries. Project files are provided for Visual Studio 2010 with Intel Compiler for the unmanaged C++ and Fortran libraries. 
 
 Doxygen code documentation on gh-pages branch hosted here;
