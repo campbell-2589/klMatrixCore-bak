@@ -1,6 +1,3 @@
-https://img.shields.io/github/directory-file-count/brucebcampbell/klMatrixCore?style=plastic
-
-https://img.shields.io/github/languages/code-size/:brucebcampbell/:klMatrixCore
 
 [![klMatrixCodeLines](https://img.shields.io/github/languages/code-size/brucebcampbell/klMatrixCore)](https://img.shields.io/github/languages/code-size/brucebcampbell/klMatrixCore)
 
