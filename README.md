@@ -1,7 +1,7 @@
 
 [![klMatrixCodeLines](https://img.shields.io/github/languages/code-size/brucebcampbell/klMatrixCore)](https://img.shields.io/github/languages/code-size/brucebcampbell/klMatrixCore)
 
-[![klMatrixCodeLines](https://img.shields.io/github/languages/directory-file-count/brucebcampbell/klMatrixCore)](https://img.shields.io/github/languages/directory-file-count/brucebcampbell/klMatrixCore)
+[![klMatrixCodeLines](https://img.shields.io/github/directory-file-count/brucebcampbell/klMatrixCore)](https://img.shields.io/github/directory-file-count/brucebcampbell/klMatrixCore)
 
 This repository contains a high performance analytics framework based on Intel MKL. Use the solutions in the wavescholar ProjectFiles repository to build the libraries. Project files are provided for Visual Studio 2010 with Intel Compiler for the unmanaged C++ and Fortran libraries. 
 
